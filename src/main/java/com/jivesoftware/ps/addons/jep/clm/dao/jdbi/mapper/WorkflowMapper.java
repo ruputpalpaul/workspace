@@ -7,7 +7,8 @@ import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 import com.jivesoftware.ps.addons.jep.clm.domain.Workflow;
 import com.jivesoftware.ps.addons.jep.clm.domain.Rule;
-
+import com.jivesoftware.ps.addons.jep.clm.domain.ContentType;
+import com.jivesoftware.ps.addons.jep.clm.dao.jdbi.mapper.BaseMapper;
 
 public class WorkflowMapper extends BaseMapper implements ResultSetMapper<Workflow> {
 
@@ -20,8 +21,8 @@ public class WorkflowMapper extends BaseMapper implements ResultSetMapper<Workfl
             resultSet.getString("name"),
             getLongValue(resultSet, "publish_time"),
             resultSet.getString("type"),
-            new List<Rule> rules(),
-            new List<ContentType> contentTypes(),
+            List<Rule> rules(),
+            List<ContentType> contentTypes(),
             new List<Reviewer> reviewers(),
         );
         }
