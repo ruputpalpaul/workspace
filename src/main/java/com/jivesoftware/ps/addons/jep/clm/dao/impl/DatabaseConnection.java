@@ -9,7 +9,7 @@ import org.skife.jdbi.v2.Handle;
 
 public class DatabaseConnection {
 	
-	private final DBI dbi = new DBI("link of db goes here");
+	private final DBI dbi = new DBI("postgres://YourUserName:YourPassword@localHost:5432/YourDatabaseName");
 	List<String> result = null;
 	
 	List<String> getDatabase() {
@@ -22,6 +22,5 @@ public class DatabaseConnection {
         h.close();
 
         return result;
-	}
-	
+	}	
 }
