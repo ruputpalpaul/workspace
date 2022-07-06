@@ -4,13 +4,14 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import com.jivesoftware.ps.addons.jep.clm.domain.ContentType;
 import com.jivesoftware.ps.addons.jep.clm.domain.Reviewer;
 
 @Getter
 @RequiredArgsConstructor
 public class Workflow {
-    private final long workflowId; 
+	private final long workflowId; 
     private final List<Rule> rules;
     private final List<ContentType> contentTypes;
     private final List<Reviewer> reviewers;

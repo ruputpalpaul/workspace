@@ -9,9 +9,8 @@ import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
 public class DatabaseConnection {
-	DBI dbi = new DBI("");
-	Handle h = dbi.open();
 	
-	h.execute("create table something (id int primary key, name varchar(100))");
+	private final DBI dbi = new DBI("");
+	Handle h = dbi.open();
 	
 }
