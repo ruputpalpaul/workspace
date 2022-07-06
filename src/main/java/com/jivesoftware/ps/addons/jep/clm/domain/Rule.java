@@ -4,8 +4,8 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import com.jivesoftware.ps.addons.jep.clm.domain.Trigger;
 import com.jivesoftware.ps.addons.jep.clm.domain.Action;
+import com.jivesoftware.ps.addons.jep.clm.domain.Trigger;
 
 @Getter
 @RequiredArgsConstructor
