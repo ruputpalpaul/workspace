@@ -4,8 +4,7 @@ import com.jivesoftware.ps.addons.jep.clm.domain.Workflow;
 
 import java.util.List;
 
-public interface WorkflowDao extends Dao {
-   
+public interface WorkflowDao extends Dao {   
     Workflow getById(long workflowId);
 
     void Update(Workflow workflow);

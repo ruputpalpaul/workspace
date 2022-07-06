@@ -1,13 +1,8 @@
 package com.jivesoftware.ps.addons.jep.clm.domain;
 
 import java.util.List;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import com.jivesoftware.ps.addons.jep.clm.domain.ContentType;
-import com.jivesoftware.ps.addons.jep.clm.domain.Place;
-import com.jivesoftware.ps.addons.jep.clm.domain.Rule;
-import com.jivesoftware.ps.addons.jep.clm.domain.Reviewer;
 
 @Getter
 @RequiredArgsConstructor
