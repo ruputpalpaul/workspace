@@ -17,13 +17,40 @@ public class WorkflowMapper extends BaseMapper implements ResultSetMapper<Workfl
     public Workflow map(int index, ResultSet resultSet, StatementContext ctx) throws SQLException {
 
         
-        Workflow workflow = new Workflow(index, null, null, null, index, null, null, index, null, index, null, index, null, null);
+        Workflow workflow = new Workflow(
+    		resultSet.getLong("workflow_id"),
+    		null,        		
+    		null, 
+    		null, 
+    		resultSet.getLong("activation_time"), 
+    		resultSet.getString("author"), 
+    		resultSet.getString("category"), 
+    		resultSet.getLong("end_time"), 
+    		resultSet.getString("last_modifier"), 
+    		resultSet.getLong("modification_time"), 
+    		resultSet.getString("name"), 
+    		resultSet.getLong("publish_time"), 
+    		resultSet.getString("status"), 
+    		resultSet.getString("type")
+    	);
         
-          
         
 
         // ...and with every line we add one of the 3 tables
-        Rule rule = new Rule(index, index, null, null, index, index, index, index, null, index, null);
+        Rule rule = new Rule(
+        		resultSet.getLong("rule_id"), 
+        		resultSet.getLong("workflow_id"), 
+        		null, 
+        		null, 
+        		resultSet.getLong("activation_time"), 
+        		resultSet.getLong("end_time"), 
+        		resultSet.getLong("executor_id"), 
+        		resultSet.getLong("rule_modification_time"), 
+        		resultSet.getString("rule_name"), 
+        		resultSet.getLong("rule_publish_time"), 
+        		resultSet.getString("rule_publish_status")
+        	);
+        
         if (rule.getRuleId() > 0) {
             workflow.getRules().add(rule);
         }
