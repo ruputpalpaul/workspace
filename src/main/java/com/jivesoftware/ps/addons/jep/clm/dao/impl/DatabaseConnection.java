@@ -10,7 +10,12 @@ import org.skife.jdbi.v2.Handle;
 
 public class DatabaseConnection {
 	
-	private final DBI dbi = new DBI("");
-	Handle h = dbi.open();
+	private final DBI dbi = new DBI("link of db goes here");
+	
+	Handle getDatabase() {
+		Handle h = dbi.open();
+		
+		return h;
+	}
 	
 }
