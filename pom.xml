@@ -8,6 +8,7 @@
 	 <properties>
 	 	<lombok.version>1.18.14</lombok.version>
 	 	<jdbi.version>2.78</jdbi.version>
+	 	<maven.compiler.source>1.8</maven.compiler.source>
 	 </properties> 
 
   
