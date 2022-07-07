@@ -27,34 +27,31 @@ public class WorkflowMapper {
         final Map<Long, Trigger> triggers = new HashMap<>();
         final Map<Long, Notification> notifications = new HashMap<>();
         final Map<Long, Reviewer> reviewers = new HashMap<>();
-        
+
         if (Objects.isNull(workflow)) {
             workflow = new Workflow(
         		resultSet.getLong("workflow_id"),
-        		new ArrayList<Rule>(),        		
-        		new ArrayList<ContentType>(), 
-        		new ArrayList<Reviewer>(), 
+        		new ArrayList<Rule>(),
+        		new ArrayList<ContentType>(),
+        		new ArrayList<Reviewer>(),
         		new ArrayList<Place>(),
-        		resultSet.getLong("activation_time"), 
-        		resultSet.getString("author"), 
-        		resultSet.getString("category"), 
-        		resultSet.getLong("end_time"), 
-        		resultSet.getString("last_modifier"), 
-        		resultSet.getLong("modification_time"), 
-        		resultSet.getString("name"), 
-        		resultSet.getLong("publish_time"), 
-        		resultSet.getString("status"), 
+        		resultSet.getString("author"),
+        		resultSet.getString("last_modifier"),
+        		resultSet.getLong("modification_time"),
+        		resultSet.getString("name"),
+        		resultSet.getLong("publish_time"),
+        		resultSet.getString("status"),
         		resultSet.getString("type")
         	);
         }
-        
+
         final Long ruleId = resultSet.getLong("rule_id");
         if (!rules.containsKey(ruleId)) {
             final Rule rule = getRule(resultSet);
             rules.put(ruleId, rule);
             workflow.getRules().add(rule);
         }
-        
+
         final Long actionId = resultSet.getLong("action_id");
         if (!actions.containsKey(actionId)) {
             final Action action = getAction(resultSet);
@@ -62,7 +59,7 @@ public class WorkflowMapper {
             final Rule rule = rules.get(ruleId);
             rule.getActions().add(action);
         }
-        
+
         final Long placeId = resultSet.getLong("place_id");
         if (!places.containsKey(placeId)) {
             final Place place = getPlace(resultSet);
@@ -110,32 +107,27 @@ public class WorkflowMapper {
 
         return workflow;
     }
-    
+
     private static Rule getRule(ResultSet resultSet) throws SQLException {
         return new Rule(
-                        resultSet.getLong("rule_id"), 
-                        resultSet.getLong("workflow_id"), 
-                        new ArrayList<Action>(), 
-                        new ArrayList<Trigger>(), 
-                        resultSet.getLong("activation_time"), 
-                        resultSet.getLong("end_time"), 
-                        resultSet.getLong("executor_id"), 
-                        resultSet.getLong("rule_modification_time"), 
-                        resultSet.getString("rule_name"), 
-                        resultSet.getLong("rule_publish_time"), 
+                        resultSet.getLong("rule_id"),
+                        resultSet.getLong("workflow_id"),
+                        new ArrayList<Action>(),
+                        new ArrayList<Trigger>(),
+                        resultSet.getLong("executor_id"),
+                        resultSet.getLong("rule_modification_time"),
+                        resultSet.getString("rule_name"),
+                        resultSet.getLong("rule_publish_time"),
                         resultSet.getString("rule_publish_status")
                     );
     }
-    
+
     private static Action getAction(ResultSet resultSet) throws SQLException {
         return new Action(
                         resultSet.getLong("action_id"),
                         resultSet.getLong("rule_id"),
                         new ArrayList<Notification>(),
-                        resultSet.getString("comment_text"),
-                        resultSet.getString("outcome_type"),
                         resultSet.getString("action_status"),
-                        resultSet.getString("target_location"),
                         resultSet.getString("action_type")
                     );
     }

@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WorkflowDaoImpl implements WorkflowDao {
     private static final String GET_BY_ID_SQL = "select wf.workflow_id,\r\n"
-                    + "       wf.activation_time,\r\n"
                     + "       wf.author,\r\n"
-                    + "       wf.category,\r\n"
-                    + "       wf.end_time,\r\n"
                     + "       wf.last_modifier,\r\n"
                     + "       wf.modification_time workflow_modification_time,\r\n"
                     + "       wf.name as workflow_name,\r\n"
@@ -35,10 +32,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
                     + "       ct.name as content_type_name,\r\n"
                     + "       ct.status as content_type_status,\r\n"
                     + "       r.rule_id,\r\n"
-                    + "       r.activation_time,\r\n"
-                    + "       r.end_time,\r\n"
                     + "       r.executor_id,\r\n"
-                    + "       r.modification_time rule_modification_time,\r\n"
+                    + "       r.modification_time as rule_modification_time,\r\n"
                     + "       r.name as rule_name,\r\n"
                     + "       r.publish_time as rule_publish_time,\r\n"
                     + "       r.status as rule_publish_status,\r\n"
@@ -46,10 +41,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
                     + "       t.trigger_type,\r\n"
                     + "       t.trigger_value,\r\n"
                     + "       ra.action_id,\r\n"
-                    + "       ra.comment_text,\r\n"
-                    + "       ra.outcome_type,\r\n"
                     + "       ra.status as rule_action_status,\r\n"
-                    + "       ra.target_location,\r\n"
                     + "       ra.type as rule_action_type,\r\n"
                     + "       n.notification_id,\r\n"
                     + "       n.subject,\r\n"
@@ -92,19 +84,19 @@ public class WorkflowDaoImpl implements WorkflowDao {
     @Override
     public void Update(Workflow workflow) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void Delete(Workflow workflow) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void saveWorkflow(Workflow workflow) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
