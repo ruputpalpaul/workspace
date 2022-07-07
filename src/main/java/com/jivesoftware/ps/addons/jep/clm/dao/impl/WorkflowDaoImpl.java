@@ -131,7 +131,16 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		+ "    :workflow_id\r\n"
     		+ ");";
 
-	private static final String UPDATE_RULE_SQL = "UPDATE clm_rule SET";
+	private static final String UPDATE_RULE_SQL = "UPDATE clm_rule SET (\r\n"
+    		+ "    rule_id = :rule_id,\r\n"
+    		+ "    end_time = :end_time,\r\n"
+    		+ "    executor_id = :executor_id,\r\n"
+    		+ "    modification_time = :modification_time,\r\n"
+    		+ "    name = :name,\r\n"
+    		+ "    publish_time = :publish_time,\r\n"
+    		+ "    status = :status,\r\n"
+    		+ "    workflow_id :workflow_id\r\n"
+			+");";
 
 	private static final String INSERT_CONTENT_TYPE_SQL = "insert into clm_content_type (\r\n"
 			+ "    content_type_id,\r\n"
@@ -145,7 +154,12 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    :status,\r\n"
 			+ "    :workflow_id\r\n"
 			+ ");";
-	private static final String UPDATE_CONTENT_TYPE_SQL = "UPDATE clm_content_type SET";
+	private static final String UPDATE_CONTENT_TYPE_SQL = "UPDATE clm_content_type SET (\r\n"
+			+ "    content_type_id = :content_type_id,\r\n"
+			+ "    name = :name,\r\n"
+			+ "    status = :status,\r\n"
+			+ "    workflow_id = :workflow_id\r\n"
+			+ ");";
 
 	private static final String INSERT_REVIEWER_SQL = "insert into clm_reviewer (\r\n"
 			+ "    reviewer_id,\r\n"
@@ -159,7 +173,12 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    :reviewer_user_id,\r\n"
 			+ "    :workflow_id\r\n"
 			+ ");";
-	private static final String UPDATE_REVIEWER_SQL = "UPDATE clm_reviewer SET";
+	private static final String UPDATE_REVIEWER_SQL = "UPDATE clm_reviewer SET (\r\n"
+			+ "    reviewer_id = :reviewer_id,\r\n"
+			+ "    status = :status,\r\n"
+			+ "    reviewer_user_id = :reviewer_user_id,\r\n"
+			+ "    workflow_id = :workflow_id\r\n"
+			+ ");";
 
 	private static final String INSERT_PLACE_SQL = "insert into clm_place (\r\n"
 			+ "    place_id,\r\n"
@@ -181,7 +200,16 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    :type,\r\n"
 			+ "    :workflow_id\r\n"
 			+ ");";
-	private static final String UPDATE_PLACE_SQL = "UPDATE clm_place SET";
+	private static final String UPDATE_PLACE_SQL = "UPDATE clm_place SET (\r\n"
+			+ "    place_id = :place_id,\r\n"
+			+ "    url = :url,\r\n"
+			+ "    jive_id = :jive_id,\r\n"
+			+ "    jive_place_id = :jive_place_id,\r\n"
+			+ "    name = :name,\r\n"
+			+ "    status = :status,\r\n"
+			+ "    type = :type,\r\n"
+			+ "    workflow_id = :workflow_id\r\n"
+			+ ");";
 
 
     private final DBI dbi;
@@ -213,166 +241,154 @@ public class WorkflowDaoImpl implements WorkflowDao {
     @Override
     public void saveWorkflow(Workflow workflow) {
     	final Handle handle = dbi.open();
+    	try {
 
-    	if (Objects.isNull(workflow.getWorkflowId())) {
-	        try {
-	            handle.createQuery(INSERT_WORKFLOW_SQL)
-	                         .bind("workflow_id", workflow.getWorkflowId())
-	                         .bind("author", workflow.getAuthor())
-	                         .bind("last_modifier", workflow.getLastModifier())
-	                         .bind("modification_time", workflow.getModificationTime())
-	                         .bind("name", workflow.getName())
-	                         .bind("publish_time", workflow.getPublishTime())
-	                         .bind("status", workflow.getStatus())
-	                         .bind("type", workflow.getType());
-	        } finally {
-	            handle.close();
-	        }
+	    	if (Objects.isNull(workflow.getWorkflowId())) {
+
+	            handle.createStatement(INSERT_WORKFLOW_SQL)
+                     .bind("workflow_id", workflow.getWorkflowId())
+                     .bind("author", workflow.getAuthor())
+                     .bind("last_modifier", workflow.getLastModifier())
+                     .bind("modification_time", workflow.getModificationTime())
+                     .bind("name", workflow.getName())
+                     .bind("publish_time", workflow.getPublishTime())
+                     .bind("status", workflow.getStatus())
+                     .bind("type", workflow.getType())
+                     .execute();
+		    }
+	    	else {
+
+	            handle.createStatement(UPDATE_WORKFLOW_SQL)
+                     .bind("workflow_id", workflow.getWorkflowId())
+                     .bind("author", workflow.getAuthor())
+                     .bind("last_modifier", workflow.getLastModifier())
+                     .bind("modification_time", workflow.getModificationTime())
+                     .bind("name", workflow.getName())
+                     .bind("publish_time", workflow.getPublishTime())
+                     .bind("status", workflow.getStatus())
+                     .bind("type", workflow.getType())
+                     .execute();
+		    }
+
 
 		    for(Rule rule: workflow.getRules()) {
-		    	if (Objects.isNull(rule.getRuleId()))
-		    	{
-		    		try {
-			            handle.createQuery(INSERT_RULE_SQL)
-			                         .bind("rule_id", rule.getRuleId())
-			                         .bind("executor_id", rule.getExecutorId())
-			                         .bind("modification_time", rule.getModificationTime())
-			                         .bind("name", rule.getName())
-			                         .bind("publish_time", rule.getPublishTime())
-			                         .bind("status", rule.getStatus())
-			                         .bind("workflow_id", rule.getWorkflowId());
-			        } finally {
-			            handle.close();
-			        }
-		    	}
 
-				else{
-					try {
-						//TODO change sql
-			            handle.createQuery(UPDATE_RULE_SQL)
-			                         .bind("rule_id", rule.getRuleId())
-			                         .bind("executor_id", rule.getExecutorId())
-			                         .bind("modification_time", rule.getModificationTime())
-			                         .bind("name", rule.getName())
-			                         .bind("publish_time", rule.getPublishTime())
-			                         .bind("status", rule.getStatus())
-			                         .bind("workflow_id", rule.getWorkflowId());
-			        } finally {
-			            handle.close();
-			        }
-				}
+		    	if (Objects.isNull(rule.getRuleId())) {
 
-		    for(ContentType contentType: workflow.getContentTypes())
+		            handle.createStatement(INSERT_RULE_SQL)
+						.bind("rule_id", rule.getRuleId())
+						.bind("executor_id", rule.getExecutorId())
+						.bind("modification_time", rule.getModificationTime())
+						.bind("name", rule.getName())
+						.bind("publish_time", rule.getPublishTime())
+						.bind("status", rule.getStatus())
+						.bind("workflow_id", rule.getWorkflowId())
+						.execute();
+			    }
+
+				else {
+
+					//TODO change sql
+					handle.createStatement(UPDATE_RULE_SQL)
+						.bind("rule_id", rule.getRuleId())
+						.bind("executor_id", rule.getExecutorId())
+						.bind("modification_time", rule.getModificationTime())
+						.bind("name", rule.getName())
+						.bind("publish_time", rule.getPublishTime())
+						.bind("status", rule.getStatus())
+						.bind("workflow_id", rule.getWorkflowId())
+						.execute();
+			    }
+			}
+
+			for(ContentType contentType: workflow.getContentTypes())
 			{
 				if (Objects.isNull(contentType.getContentTypeId()))
-		    	{
-		    		try {
-			            handle.createQuery(INSERT_CONTENT_TYPE_SQL)
-			                         .bind("content_type_id", contentType.getContentTypeId())
-			                         .bind("name", contentType.getName())
-			                         .bind("status", contentType.getStatus())
-			                         .bind("workflow_id", contentType.getWorkflowId());
-			        } finally {
-			            handle.close();
-			        }
-		    	}
+				{
+
+					handle.createStatement(INSERT_CONTENT_TYPE_SQL)
+						.bind("content_type_id", contentType.getContentTypeId())
+						.bind("name", contentType.getName())
+						.bind("status", contentType.getStatus())
+						.bind("workflow_id", contentType.getWorkflowId())
+						.execute();
+
+				}
 
 				else{
-					try {
+
 						//TODO change sql
-			            handle.createQuery(UPDATE_CONTENT_TYPE_SQL)
-			                         .bind("content_type_id", contentType.getContentTypeId())
-			                         .bind("name", contentType.getName())
-			                         .bind("status", contentType.getStatus())
-			                         .bind("workflow_id", contentType.getWorkflowId());
-			        } finally {
-			            handle.close();
-			        }
+					handle.createStatement(UPDATE_CONTENT_TYPE_SQL)
+						.bind("content_type_id", contentType.getContentTypeId())
+						.bind("name", contentType.getName())
+						.bind("status", contentType.getStatus())
+						.bind("workflow_id", contentType.getWorkflowId())
+						.execute();
+
 				}
 			}
 
 			for(Reviewer reviewer: workflow.getReviewers())
 			{
 				if (Objects.isNull(reviewer.getReviewerId()))
-		    	{
-		    		try {
-			            handle.createQuery(INSERT_REVIEWER_SQL)
-			                         .bind("reviewer_id", reviewer.getReviewerId())
-			                         .bind("reviewer_user_id", reviewer.getReviewerUserId())
-			                         .bind("status", reviewer.getStatus())
-			                         .bind("workflow_id", reviewer.getWorkflowId());
-			        } finally {
-			            handle.close();
-			        }
-		    	}
+				{
+
+					handle.createStatement(INSERT_REVIEWER_SQL)
+						.bind("reviewer_id", reviewer.getReviewerId())
+						.bind("reviewer_user_id", reviewer.getReviewerUserId())
+						.bind("status", reviewer.getStatus())
+						.bind("workflow_id", reviewer.getWorkflowId())
+						.execute();
+
+				}
 				else{
-					try {
-			            handle.createQuery(UPDATE_REVIEWER_SQL)
-			                         .bind("reviewer_id", reviewer.getReviewerId())
-			                         .bind("reviewer_user_id", reviewer.getReviewerUserId())
-			                         .bind("status", reviewer.getStatus())
-			                         .bind("workflow_id", reviewer.getWorkflowId());
-			        } finally {
-			            handle.close();
-			        }
+
+					handle.createStatement(UPDATE_REVIEWER_SQL)
+						.bind("reviewer_id", reviewer.getReviewerId())
+						.bind("reviewer_user_id", reviewer.getReviewerUserId())
+						.bind("status", reviewer.getStatus())
+						.bind("workflow_id", reviewer.getWorkflowId())
+						.execute();
+
 				}
 			}
 
 			for(Place place: workflow.getPlaces())
 			{
 				if (Objects.isNull(place.getPlaceId()))
-		    	{
-		    		try {
-			            handle.createQuery(INSERT_PLACE_SQL)
-			                         .bind("place_id", place.getPlaceId())
-			                         .bind("url", place.getUrl())
-			                         .bind("jive_id", place.getJiveId())
-			                         .bind("jive_place_id", place.getJivePlaceId())
-									 .bind("name", place.getName())
-									 .bind("status", place.getStatus())
-									 .bind("type", place.getType());
-			        } finally {
-			            handle.close();
-			        }
-		    	}
+				{
+
+					handle.createStatement(INSERT_PLACE_SQL)
+						.bind("place_id", place.getPlaceId())
+						.bind("url", place.getUrl())
+						.bind("jive_id", place.getJiveId())
+						.bind("jive_place_id", place.getJivePlaceId())
+						.bind("name", place.getName())
+						.bind("status", place.getStatus())
+						.bind("type", place.getType())
+						.execute();
+
+				}
 				else{
-					try {
-			            handle.createQuery(UPDATE_PLACE_SQL)
-			                         .bind("place_id", place.getPlaceId())
-			                         .bind("url", place.getUrl())
-			                         .bind("jive_id", place.getJiveId())
-			                         .bind("jive_place_id", place.getJivePlaceId())
-									 .bind("name", place.getName())
-									 .bind("status", place.getStatus())
-									 .bind("type", place.getType());
-			        } finally {
-			            handle.close();
-			        }
+
+					handle.createStatement(UPDATE_PLACE_SQL)
+						.bind("place_id", place.getPlaceId())
+						.bind("url", place.getUrl())
+						.bind("jive_id", place.getJiveId())
+						.bind("jive_place_id", place.getJivePlaceId())
+						.bind("name", place.getName())
+						.bind("status", place.getStatus())
+						.bind("type", place.getType())
+						.execute();
+
 				}
 			}
-
-	    }
-
-	        //TODO check for the id and insert for the Trigger, Recipient, Notification and Action classes
+			//TODO check for the id and insert for the Trigger, Recipient, Notification and Action classes
         }
 
-    	else {
-    		try {
-				//TODO change sql
-	            handle.createQuery(UPDATE_WORKFLOW_SQL)
-	                         .bind("workflow_id", workflow.getWorkflowId())
-	                         .bind("author", workflow.getAuthor())
-	                         .bind("last_modifier", workflow.getLastModifier())
-	                         .bind("modification_time", workflow.getModificationTime())
-	                         .bind("name", workflow.getName())
-	                         .bind("publish_time", workflow.getPublishTime())
-	                         .bind("status", workflow.getStatus())
-	                         .bind("type", workflow.getType());
-	        } finally {
-	            handle.close();
-	        }
-    	}
-
+		finally {
+            handle.close();
+        }
 
     }
 
