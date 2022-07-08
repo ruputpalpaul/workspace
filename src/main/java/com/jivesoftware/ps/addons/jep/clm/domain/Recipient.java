@@ -9,4 +9,5 @@ public class Recipient{
     private final long recipientTypeId;
     private final long notificationId;
     private final String name;
+    private final String status;
 }

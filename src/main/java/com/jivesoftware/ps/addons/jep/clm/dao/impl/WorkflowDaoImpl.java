@@ -279,11 +279,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
         }
     }
 
-    @Override
-    public void Update(Workflow workflow) {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     public void Delete(Workflow workflow) {
@@ -294,7 +289,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
     	}
     	else {
     		handle.createStatement("UPDATE clm_workflow SET status = 'Deleted' WHERE workflow_id = :workflow_id")
-    			.bind("workflow_id", workflow.getWorkflowId());
+    			.bind("workflow_id", workflow.getWorkflowId())
+    			.execute();
     		
     		for(Rule rule: workflow.getRules()) {
 
@@ -303,49 +299,54 @@ public class WorkflowDaoImpl implements WorkflowDao {
 		    	}
 		    	else {
 		    		handle.createStatement("UPDATE clm_rule SET status = 'Deleted' WHERE rule_id = :rule_id")
-	    				.bind("rule_id", rule.getRuleId());
+	    				.bind("rule_id", rule.getRuleId())
+	    				.execute();
 		    	}
 		    	
-		    	for (Action action: rule.getActions())
-				{
-		    		if (action.getActionId()==0 && action.getStatus()!= "Deleted") {
-		    			System.out.print("Action doesn't exist");
-		    		}
-		    		else {
-		    			handle.createStatement("UPDATE clm_rule_action SET status = 'Deleted' WHERE action_id = :action_id")
-	    				.bind("action_id", action.getActionId());
-		    		}
-		    		
-		    		Notification notification = action.getNotification();
-					
-		    		if (notification.getNotificationId()==0) {
-		    			System.out.print("Notification doesn't exist");
-		    		}
-		    		else {
-		    			handle.createStatement("DELETE from clm_notification WHERE notification_id = :notification_id")
-	    				.bind("notification", notification.getNotificationId());
-		    		}
-		    		
-		    		for (Recipient recipient: notification.getRecipients())
-					{
-			    		if (recipient.getRecipientTypeId()==0) {
-			    			System.out.print("Recipient doesn't exist");
-			    		}
-			    		else {
-			    			handle.createStatement("DELETE from clm_recipient WHERE recipient_id = :recipient_id")
-		    				.bind("notification", notification.getNotificationId());
-			    		}
-			    	}
-		    	}
-		    	Trigger trigger = rule.getTrigger();
-		    	
-	    		if (trigger.getTriggerId()==0) {
-	    			System.out.print("Recipient doesn't exist");
-	    		}
-	    		else {
-	    			handle.createStatement("DELETE from clm_trigger WHERE trigger_id = :trigger_id")
-    				.bind("notification", trigger.getTriggerId());
-	    		}
+//		    	for (Action action: rule.getActions())
+//				{
+//		    		if (action.getActionId()==0 && action.getStatus()!= "Deleted") {
+//		    			System.out.print("Action doesn't exist");
+//		    		}
+//		    		else {
+//		    			handle.createStatement("UPDATE clm_rule_action SET status = 'Deleted' WHERE action_id = :action_id")
+//	    				.bind("action_id", action.getActionId())
+//	    				.execute();
+//		    		}
+//		    		
+//		    		Notification notification = action.getNotification();
+//					
+//		    		if (notification.getNotificationId()==0) {
+//		    			System.out.print("Notification doesn't exist");
+//		    		}
+//		    		else {
+//		    			handle.createStatement("DELETE from clm_notification WHERE notification_id = :notification_id")
+//	    				.bind("notification", notification.getNotificationId())
+//	    				.execute();
+//		    		}
+//		    		
+//		    		for (Recipient recipient: notification.getRecipients())
+//					{
+//			    		if (recipient.getRecipientTypeId()==0) {
+//			    			System.out.print("Recipient doesn't exist");
+//			    		}
+//			    		else {
+//			    			handle.createStatement("DELETE from clm_recipient WHERE recipient_id = :recipient_id")
+//		    				.bind("notification", notification.getNotificationId())
+//		    				.execute();
+//			    		}
+//			    	}
+//		    	}
+//		    	Trigger trigger = rule.getTrigger();
+//		    	
+//	    		if (trigger.getTriggerId()==0) {
+//	    			System.out.print("Recipient doesn't exist");
+//	    		}
+//	    		else {
+//	    			handle.createStatement("DELETE from clm_trigger WHERE trigger_id = :trigger_id")
+//    				.bind("notification", trigger.getTriggerId())
+//    				.execute();
+//	    		}
 	    			
     		}
     		for(ContentType contentType: workflow.getContentTypes())
@@ -356,7 +357,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
 				}
 				else {
 					handle.createStatement("UPDATE clm_content_type SET status = 'Deleted' WHERE content_type_id = :content_type_id")
-    				.bind("content_type_id", contentType.getContentTypeId());
+    				.bind("content_type_id", contentType.getContentTypeId())
+    				.execute();
 				}
 			}
     		
@@ -368,7 +370,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
 				}
 				else {
 					handle.createStatement("UPDATE clm_reviewer SET status = 'Deleted' WHERE reviewer_id = :reviewer_id")
-    				.bind("reviewer_id", reviewer.getReviewerId());
+    				.bind("reviewer_id", reviewer.getReviewerId())
+    				.execute();
 				}
 				
 			}
@@ -380,7 +383,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
 				}
 				else {
 					handle.createStatement("UPDATE clm_place SET status = 'Deleted' WHERE place_id = :place_id")
-    				.bind("place_id", place.getPlaceId());
+    				.bind("place_id", place.getPlaceId())
+    				.execute();
 				}
 			}
     	}

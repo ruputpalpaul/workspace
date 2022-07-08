@@ -115,7 +115,8 @@ public class WorkflowMapper {
                         	resultSet.getLong("trigger_id"),
 	                        resultSet.getLong("rule_id"),
 	                        resultSet.getString("trigger_type"),
-	                        resultSet.getLong("trigger_value")),
+	                        resultSet.getLong("trigger_value"),
+	                        resultSet.getString("status")),
                         resultSet.getLong("executor_id"),
                         resultSet.getLong("rule_modification_time"),
                         resultSet.getString("rule_name"),
@@ -133,7 +134,8 @@ public class WorkflowMapper {
                             resultSet.getLong("action_id"),
                             new ArrayList<Recipient>(),
                             resultSet.getString("subject"),
-                            resultSet.getString("text")),
+                            resultSet.getString("text"),
+                            resultSet.getString("status")),
                         resultSet.getString("action_status"),
                         resultSet.getString("action_type")
                     );
@@ -167,7 +169,8 @@ public class WorkflowMapper {
                             resultSet.getLong("trigger_id"),
                             resultSet.getLong("rule_id"),
                             resultSet.getString("trigger_type"),
-                            resultSet.getLong("trigger_value")
+                            resultSet.getLong("trigger_value"),
+                            resultSet.getString("status")
             );
     }
 
@@ -177,7 +180,8 @@ public class WorkflowMapper {
                             resultSet.getLong("action_id"),
                             new ArrayList<Recipient>(),
                             resultSet.getString("subject"),
-                            resultSet.getString("text")
+                            resultSet.getString("text"),
+                            resultSet.getString("status")
             );
     }
 
@@ -185,7 +189,8 @@ public class WorkflowMapper {
         return new Recipient(
                             resultSet.getLong("recipient_id"),
                             resultSet.getLong("ntification_id"),
-                            resultSet.getString("recipient_type_name")
+                            resultSet.getString("recipient_type_name"),
+                            resultSet.getString("status")
             );
     }
 

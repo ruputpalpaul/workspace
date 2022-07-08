@@ -12,4 +12,5 @@ public class Notification{
     private final List<Recipient> recipients;
     private final String subject;
     private final String text;
+    private final String status;
 }

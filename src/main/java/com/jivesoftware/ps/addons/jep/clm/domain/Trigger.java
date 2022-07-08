@@ -10,4 +10,5 @@ public class Trigger{
     private final long ruleId;
     private final String triggerType;
     private final long triggerValue;
+    private final String status;
 }
