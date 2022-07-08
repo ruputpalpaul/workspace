@@ -1,6 +1,7 @@
 package com.jivesoftware.ps.addons.jep.clm.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -25,31 +26,31 @@ public class JdbiTest {
         PGPoolingDataSource source = new PGPoolingDataSource();
         source.setDataSourceName("jdbc:postgresql");
         source.setServerName("localhost");
-        source.setDatabaseName("clm-addon");
+        source.setDatabaseName("test");
         source.setUser("postgres");
-        source.setPassword("postgres");
+        source.setPassword("Hiy@1329");
         
         dbi = new DBI(source);
     }
 
-    @Test
-    public void testGetWorkflow() {
-        WorkflowDaoImpl dao = new WorkflowDaoImpl(dbi);
-        
-        final Workflow wf = dao.getById(1215);
-        System.out.println(wf);
-        
-    }
+//    @Test
+//    public void testGetWorkflow() {
+//        WorkflowDaoImpl dao = new WorkflowDaoImpl(dbi);
+//        
+//        final Workflow wf = dao.getById(1001);
+//        System.out.println(wf);
+//        
+//    }
     
     @Test
     public void testSaveWorkflow() {
     	WorkflowDaoImpl dao = new WorkflowDaoImpl(dbi);
     	
     	Rule rule = new Rule(
-    			1001,
-    			1001,
-    			null,
-    			null,
+    			0,
+    			0,
+    			Collections.emptyList(),
+    			Collections.emptyList(),
     			1234,
     			100100100,
     			"test",
@@ -59,11 +60,11 @@ public class JdbiTest {
     	List <Rule> ruleList = new ArrayList<Rule>();
     	ruleList.add(rule);
     	Workflow workflow = new Workflow(
-    		1001,
+    		0,
     		ruleList,
-    		null,
-    		null,
-    		null,
+    		Collections.emptyList(),
+    		Collections.emptyList(),
+    		Collections.emptyList(),
     		"test",
     		"test",
     		100100100,

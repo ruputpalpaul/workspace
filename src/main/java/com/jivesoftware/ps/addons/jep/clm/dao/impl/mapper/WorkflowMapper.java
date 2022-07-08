@@ -37,11 +37,11 @@ public class WorkflowMapper {
         		new ArrayList<Place>(),
         		resultSet.getString("author"),
         		resultSet.getString("last_modifier"),
-        		resultSet.getLong("modification_time"),
-        		resultSet.getString("name"),
-        		resultSet.getLong("publish_time"),
-        		resultSet.getString("status"),
-        		resultSet.getString("type")
+        		resultSet.getLong("workflow_modification_time"),
+        		resultSet.getString("_workflow_name"),
+        		resultSet.getLong("workflow_publish_time"),
+        		resultSet.getString("workflow_status"),
+        		resultSet.getString("workflow_type")
         	);
         }
 

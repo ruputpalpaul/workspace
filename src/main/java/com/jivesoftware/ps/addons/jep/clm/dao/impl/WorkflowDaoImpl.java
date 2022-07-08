@@ -26,8 +26,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
                     + "       wf.modification_time workflow_modification_time,\r\n"
                     + "       wf.name as workflow_name,\r\n"
                     + "       wf.publish_time workflow_publish_time,\r\n"
-                    + "       wf.status as workflo_status,\r\n"
-                    + "       wf.type as workflo_type,\r\n"
+                    + "       wf.status as workflow_status,\r\n"
+                    + "       wf.type as workflow_type,\r\n"
                     + "       rv.reviewer_id,\r\n"
                     + "       rv.status as reviewer_status,\r\n"
                     + "       rv.reviewer_user_id,\r\n"
@@ -73,12 +73,11 @@ public class WorkflowDaoImpl implements WorkflowDao {
                     + "         ON r.rule_id = ra.rule_id\r\n"
                     + "  LEFT JOIN clm_notification as n\r\n"
                     + "         ON ra.action_id = n.action_id\r\n"
-                    + "  LEFT JOIN clm_recipient_type as rt\r\n"
+                    + "  LEFT JOIN clm_recipient as rt\r\n"
                     + "         ON n.notification_id = rt.notification_id\r\n"
                     + " WHERE wf.workflow_id = :workflowId";
 
     private static final String INSERT_WORKFLOW_SQL = "INSERT into clm_workflow(\r\n"
-    		+ "    workflow_id,\r\n"
     		+ "    author,\r\n"
     		+ "    last_modifier,\r\n"
     		+ "    modification_time,\r\n"
@@ -89,7 +88,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		+ ")\r\n"
     		+ "values\r\n"
     		+ "(\r\n"
-    		+ "    :workflow_id,\r\n"
     		+ "    :author,\r\n"
     		+ "    :last_modifier,\r\n"
     		+ "    :modification_time,\r\n"
@@ -99,7 +97,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		+ "    :type\r\n"
     		+ ");";
 
-    private static final String UPDATE_WORKFLOW_SQL = "UPDATE clm_workflow SET(\r\n"
+    private static final String UPDATE_WORKFLOW_SQL = "UPDATE clm_workflow SET\r\n"
     		+ "    workflow_id = :workflow_id,\r\n"
     		+ "    author = :author,\r\n"
     		+ "    last_modifier = :last_modifier,\r\n"
@@ -107,12 +105,9 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		+ "    name = :name,\r\n"
     		+ "    publish_time = :publish_time,\r\n"
     		+ "    status = :status,\r\n"
-    		+ "    type = :type\r\n"
-    		+ ");";
+    		+ "    type = :type;";
 
     private static final String INSERT_RULE_SQL = "insert into clm_rule (\r\n"
-    		+ "    rule_id,\r\n"
-    		+ "    end_time,\r\n"
     		+ "    executor_id,\r\n"
     		+ "    modification_time,\r\n"
     		+ "    name,\r\n"
@@ -121,8 +116,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		+ "    workflow_id\r\n"
     		+ ")\r\n"
     		+ "values(\r\n"
-    		+ "    :rule_id,\r\n"
-    		+ "    :end_time,\r\n"
     		+ "    :executor_id,\r\n"
     		+ "    :modification_time,\r\n"
     		+ "    :name,\r\n"
@@ -131,57 +124,50 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		+ "    :workflow_id\r\n"
     		+ ");";
 
-	private static final String UPDATE_RULE_SQL = "UPDATE clm_rule SET (\r\n"
+	private static final String UPDATE_RULE_SQL = "UPDATE clm_rule SET \r\n"
     		+ "    rule_id = :rule_id,\r\n"
-    		+ "    end_time = :end_time,\r\n"
     		+ "    executor_id = :executor_id,\r\n"
     		+ "    modification_time = :modification_time,\r\n"
     		+ "    name = :name,\r\n"
     		+ "    publish_time = :publish_time,\r\n"
     		+ "    status = :status,\r\n"
-    		+ "    workflow_id :workflow_id\r\n"
-			+");";
+    		+ "    workflow_id = :workflow_id";
 
 	private static final String INSERT_CONTENT_TYPE_SQL = "insert into clm_content_type (\r\n"
-			+ "    content_type_id,\r\n"
 			+ "    name,\r\n"
 			+ "    status,\r\n"
 			+ "    workflow_id\r\n"
 			+ ")\r\n"
 			+ "values(\r\n"
-			+ "    :content_type_id,\r\n"
 			+ "    :name,\r\n"
 			+ "    :status,\r\n"
 			+ "    :workflow_id\r\n"
 			+ ");";
-	private static final String UPDATE_CONTENT_TYPE_SQL = "UPDATE clm_content_type SET (\r\n"
+	private static final String UPDATE_CONTENT_TYPE_SQL = "UPDATE clm_content_type SET \r\n"
 			+ "    content_type_id = :content_type_id,\r\n"
 			+ "    name = :name,\r\n"
 			+ "    status = :status,\r\n"
 			+ "    workflow_id = :workflow_id\r\n"
-			+ ");";
+			+ ";";
 
 	private static final String INSERT_REVIEWER_SQL = "insert into clm_reviewer (\r\n"
-			+ "    reviewer_id,\r\n"
 			+ "    status,\r\n"
 			+ "    reviewer_user_id,\r\n"
 			+ "    workflow_id\r\n"
 			+ ")\r\n"
 			+ "values(\r\n"
-			+ "    :reviewer_id,\r\n"
 			+ "    :status,\r\n"
 			+ "    :reviewer_user_id,\r\n"
 			+ "    :workflow_id\r\n"
 			+ ");";
-	private static final String UPDATE_REVIEWER_SQL = "UPDATE clm_reviewer SET (\r\n"
+	private static final String UPDATE_REVIEWER_SQL = "UPDATE clm_reviewer SET \r\n"
 			+ "    reviewer_id = :reviewer_id,\r\n"
 			+ "    status = :status,\r\n"
 			+ "    reviewer_user_id = :reviewer_user_id,\r\n"
 			+ "    workflow_id = :workflow_id\r\n"
-			+ ");";
+			+ ";";
 
 	private static final String INSERT_PLACE_SQL = "insert into clm_place (\r\n"
-			+ "    place_id,\r\n"
 			+ "    url,\r\n"
 			+ "    jive_id,\r\n"
 			+ "    jive_place_id,\r\n"
@@ -191,7 +177,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    workflow_id\r\n"
 			+ ")\r\n"
 			+ "values(\r\n"
-			+ "    :place_id,\r\n"
 			+ "    :url,\r\n"
 			+ "    :jive_id,\r\n"
 			+ "    :jive_place_id,\r\n"
@@ -200,7 +185,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    :type,\r\n"
 			+ "    :workflow_id\r\n"
 			+ ");";
-	private static final String UPDATE_PLACE_SQL = "UPDATE clm_place SET (\r\n"
+	private static final String UPDATE_PLACE_SQL = "UPDATE clm_place SET \r\n"
 			+ "    place_id = :place_id,\r\n"
 			+ "    url = :url,\r\n"
 			+ "    jive_id = :jive_id,\r\n"
@@ -209,9 +194,77 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    status = :status,\r\n"
 			+ "    type = :type,\r\n"
 			+ "    workflow_id = :workflow_id\r\n"
+			+ ";";
+
+	private static final String INSERT_ACTION_SQL = "INSERT into clm_rule_action(\r\n"
+			+ "    status,\r\n"
+			+ "    type,\r\n"
+			+ "    rule_id\r\n"
+			+ ")\r\n"
+			+ "values(\r\n"
+			+ "    :status,\r\n"
+			+ "    :type,\r\n"
+			+ "    :rule_id\r\n"
 			+ ");";
 
+	private static final String UPDATE_ACTION_SQL = "UPDATE  clm_rule_action SET\r\n"
+			+ "    action_id = :action_id,\r\n"
+			+ "    status = :status,\r\n"
+			+ "    type = :type,\r\n"
+			+ "    rule_id = :rule_id;";
 
+	private static final String INSERT_NOTIFICATION_SQL = "insert into clm_notification(\r\n"
+			+ "    subject,\r\n"
+			+ "    text,\r\n"
+			+ "    action_id\r\n"
+			+ ")\r\n"
+			+ "values(\r\n"
+			+ "    :subject,\r\n"
+			+ "    :text,\r\n"
+			+ "    :action_id\r\n"
+			+ ");";
+
+	private static final String UPDATE_NOTIFICATION_SQL = "UPDATE  clm_notification SET\r\n"
+			+ "    notification_id = :notification_id,\r\n"
+			+ "    text = :text,\r\n"
+			+ "    aubject = :subject,\r\n"
+			+ "    action_id = :action_id;";
+
+	private static final String INSERT_RECIPIENT_SQL = "insert into clm_notification(\r\n"
+			+ "    subject,\r\n"
+			+ "    text,\r\n"
+			+ "    action_id\r\n"
+			+ ")\r\n"
+			+ "values(\r\n"
+			+ "    :subject,\r\n"
+			+ "    :text,\r\n"
+			+ "    :action_id\r\n"
+			+ ");";
+
+	private static final String UPDATE_RECIPIENT_SQL = "UPDATE  clm_notification SET\r\n"
+			+ "    notification_id = :notification_id,\r\n"
+			+ "    text = :text,\r\n"
+			+ "    aubject = :subject,\r\n"
+			+ "    action_id = :action_id;";
+
+	private static final String INSERT_TRIGGER_SQL = "insert into clm_trigger(\r\n"
+			+ "    trigger_type,\r\n"
+			+ "    trigger_value,\r\n"
+			+ "    rule_id\r\n"
+			+ ")\r\n"
+			+ "values(\r\n"
+			+ "    :trigger_type,\r\n"
+			+ "    :trigger_value,\r\n"
+			+ "    :rule_id\r\n"
+			+ ");";
+
+	private static final String UPDATE_TRIGGER_SQL = "UPDATE clm_trigger SET\r\n"
+			+ "    trigger_id = :trigger_id,\r\n"
+			+ "    trigger_type = :trigger_type,\r\n"
+			+ "    trigger_value = :trigger_value,\r\n"
+			+ "    rule_id = :rule_id;";
+	
+	
     private final DBI dbi;
 
     @Override
@@ -243,10 +296,9 @@ public class WorkflowDaoImpl implements WorkflowDao {
     	final Handle handle = dbi.open();
     	try {
 
-	    	if (Objects.isNull(workflow.getWorkflowId())) {
+	    	if (workflow.getWorkflowId()==0) {
 
 	            handle.createStatement(INSERT_WORKFLOW_SQL)
-                     .bind("workflow_id", workflow.getWorkflowId())
                      .bind("author", workflow.getAuthor())
                      .bind("last_modifier", workflow.getLastModifier())
                      .bind("modification_time", workflow.getModificationTime())
@@ -273,10 +325,9 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 		    for(Rule rule: workflow.getRules()) {
 
-		    	if (Objects.isNull(rule.getRuleId())) {
+		    	if (rule.getRuleId()==0) {
 
 		            handle.createStatement(INSERT_RULE_SQL)
-						.bind("rule_id", rule.getRuleId())
 						.bind("executor_id", rule.getExecutorId())
 						.bind("modification_time", rule.getModificationTime())
 						.bind("name", rule.getName())
@@ -288,7 +339,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 				else {
 
-					//TODO change sql
 					handle.createStatement(UPDATE_RULE_SQL)
 						.bind("rule_id", rule.getRuleId())
 						.bind("executor_id", rule.getExecutorId())
@@ -299,15 +349,101 @@ public class WorkflowDaoImpl implements WorkflowDao {
 						.bind("workflow_id", rule.getWorkflowId())
 						.execute();
 			    }
+
+		    	for (Action action: rule.getActions())
+				{
+		    		if (action.getActionId()==0) {
+
+			            handle.createStatement(INSERT_ACTION_SQL)
+							.bind("status", action.getStatus())
+							.bind("type", action.getType())
+							.bind("rule_id", action.getRuleId())
+							.execute();
+				    }
+
+					else {
+
+						handle.createStatement(UPDATE_ACTION_SQL)
+							.bind("action_id", action.getActionId())
+							.bind("status", action.getStatus())
+							.bind("type", action.getType())
+							.bind("rule_id", action.getRuleId())
+							.execute();
+				    }
+
+		    		for (Notification notification: action.getNotifications())
+					{
+			    		if (notification.getNotificationId()==0) {
+
+				            handle.createStatement(INSERT_NOTIFICATION_SQL)
+								.bind("subject", notification.getSubject())
+								.bind("text", notification.getText())
+								.bind("action_id", notification.getActionId())
+								.execute();
+					    }
+
+						else {
+
+							handle.createStatement(UPDATE_NOTIFICATION_SQL)
+								.bind("notification_id", notification.getNotificationId())
+								.bind("subject", notification.getSubject())
+								.bind("text", notification.getText())
+								.bind("action_id", notification.getActionId())
+								.execute();
+					    }
+			    		for (Recipient recipient: notification.getRecipients())
+						{
+				    		if (recipient.getRecipientTypeId()==0) {
+
+					            handle.createStatement(INSERT_RECIPIENT_SQL)
+									.bind("notification_id", recipient.getNotificationId())
+									.bind("name", recipient.getName())
+									.execute();
+						    }
+
+							else {
+
+								handle.createStatement(UPDATE_RECIPIENT_SQL)
+									.bind("notification_id", recipient.getNotificationId())
+									.bind("recipient_type_id", recipient.getRecipientTypeId())
+									.bind("name", recipient.getName())
+									.execute();
+						    }
+						}
+					}
+				}
+
+		    	for (Trigger trigger: rule.getTriggers())
+		    	{
+		    		if (trigger.getTriggerId()==0) {
+
+			            handle.createStatement(INSERT_TRIGGER_SQL)
+							.bind("trigger_type", trigger.getTriggerType())
+							.bind("trigger_value", trigger.getTriggerValue())
+							.bind("rule_id", trigger.getRuleId())
+							.execute();
+				    }
+
+					else {
+
+						handle.createStatement(UPDATE_TRIGGER_SQL)
+							.bind("trigger_id", trigger.getTriggerId())
+							.bind("trigger_type", trigger.getTriggerType())
+							.bind("trigger_value", trigger.getTriggerValue())
+							.bind("rule_id", trigger.getRuleId())
+							.execute();
+				    }
+		    	}
+
+
 			}
 
 			for(ContentType contentType: workflow.getContentTypes())
 			{
-				if (Objects.isNull(contentType.getContentTypeId()))
+				if (contentType.getContentTypeId()==0)
 				{
 
 					handle.createStatement(INSERT_CONTENT_TYPE_SQL)
-						.bind("content_type_id", contentType.getContentTypeId())
 						.bind("name", contentType.getName())
 						.bind("status", contentType.getStatus())
 						.bind("workflow_id", contentType.getWorkflowId())
@@ -317,7 +453,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 				else{
 
-						//TODO change sql
 					handle.createStatement(UPDATE_CONTENT_TYPE_SQL)
 						.bind("content_type_id", contentType.getContentTypeId())
 						.bind("name", contentType.getName())
@@ -330,11 +465,10 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 			for(Reviewer reviewer: workflow.getReviewers())
 			{
-				if (Objects.isNull(reviewer.getReviewerId()))
+				if (reviewer.getReviewerId()==0)
 				{
 
 					handle.createStatement(INSERT_REVIEWER_SQL)
-						.bind("reviewer_id", reviewer.getReviewerId())
 						.bind("reviewer_user_id", reviewer.getReviewerUserId())
 						.bind("status", reviewer.getStatus())
 						.bind("workflow_id", reviewer.getWorkflowId())
@@ -351,6 +485,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 						.execute();
 
 				}
+
 			}
 
 			for(Place place: workflow.getPlaces())
@@ -359,7 +494,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
 				{
 
 					handle.createStatement(INSERT_PLACE_SQL)
-						.bind("place_id", place.getPlaceId())
 						.bind("url", place.getUrl())
 						.bind("jive_id", place.getJiveId())
 						.bind("jive_place_id", place.getJivePlaceId())
@@ -383,7 +517,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 				}
 			}
-			//TODO check for the id and insert for the Trigger, Recipient, Notification and Action classes
+			//TODO check for the id and insert for the Trigger, Recipient,
         }
 
 		finally {
