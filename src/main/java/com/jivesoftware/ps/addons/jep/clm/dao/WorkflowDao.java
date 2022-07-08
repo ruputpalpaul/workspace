@@ -7,8 +7,6 @@ import java.util.List;
 public interface WorkflowDao extends Dao {   
     Workflow getById(long workflowId);
 
-    void Update(Workflow workflow);
-
     void Delete(Workflow workflow);
 
     void saveWorkflow(Workflow workflow);
