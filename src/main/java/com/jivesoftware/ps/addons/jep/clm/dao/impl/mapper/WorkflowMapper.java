@@ -78,7 +78,6 @@ public class WorkflowMapper {
         if (!triggers.containsKey(triggerId)){
             final Trigger trigger = getTrigger(resultSet);
             triggers.put(triggerId, trigger);
-            final Rule rule = rules.get(ruleId);
         }
 
         final Long notificationId = resultSet.getLong("Notification_id");

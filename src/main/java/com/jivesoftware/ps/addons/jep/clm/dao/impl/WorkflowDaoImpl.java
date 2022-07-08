@@ -388,6 +388,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 				}
 			}
     	}
+    	handle.close();
 
     }
 

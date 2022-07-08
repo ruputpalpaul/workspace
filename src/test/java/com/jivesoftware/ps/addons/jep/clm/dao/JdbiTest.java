@@ -37,7 +37,7 @@ public class JdbiTest {
     public void testGetWorkflow() {
         WorkflowDaoImpl dao = new WorkflowDaoImpl(dbi);
         
-        final Workflow wf = dao.getById(1001);
+        final Workflow wf = dao.getById(1);
         System.out.println(wf);
         
     }
@@ -48,7 +48,7 @@ public class JdbiTest {
     	
     	Rule rule = new Rule(
     			0,
-    			0,
+    			1,
     			Collections.emptyList(),
     			null,
     			1234,
