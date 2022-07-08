@@ -10,7 +10,7 @@ public class Rule{
     private final long ruleId;
     private final long workflowId;
     private final List<Action> actions;
-    private final List<Trigger> triggers;
+    private final Trigger trigger;
     private final long executorId;
     private final long modificationTime;
     private final String name;

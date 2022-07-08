@@ -33,14 +33,14 @@ public class JdbiTest {
         dbi = new DBI(source);
     }
 
-//    @Test
-//    public void testGetWorkflow() {
-//        WorkflowDaoImpl dao = new WorkflowDaoImpl(dbi);
-//        
-//        final Workflow wf = dao.getById(1001);
-//        System.out.println(wf);
-//        
-//    }
+    @Test
+    public void testGetWorkflow() {
+        WorkflowDaoImpl dao = new WorkflowDaoImpl(dbi);
+        
+        final Workflow wf = dao.getById(1001);
+        System.out.println(wf);
+        
+    }
     
     @Test
     public void testSaveWorkflow() {
@@ -50,7 +50,7 @@ public class JdbiTest {
     			0,
     			0,
     			Collections.emptyList(),
-    			Collections.emptyList(),
+    			null,
     			1234,
     			100100100,
     			"test",

@@ -79,7 +79,6 @@ public class WorkflowMapper {
             final Trigger trigger = getTrigger(resultSet);
             triggers.put(triggerId, trigger);
             final Rule rule = rules.get(ruleId);
-            rule.getTriggers().add(trigger);;
         }
 
         final Long notificationId = resultSet.getLong("Notification_id");
@@ -87,7 +86,6 @@ public class WorkflowMapper {
             final Notification notification = getNotification(resultSet);
             notifications.put(notificationId, notification);
             final Action action = actions.get(actionId);
-            action.getNotifications().add(notification);
         }
 
         final Long recipientId = resultSet.getLong("Recipient_id");
@@ -113,7 +111,11 @@ public class WorkflowMapper {
                         resultSet.getLong("rule_id"),
                         resultSet.getLong("workflow_id"),
                         new ArrayList<Action>(),
-                        new ArrayList<Trigger>(),
+                        new Trigger(
+                        	resultSet.getLong("trigger_id"),
+	                        resultSet.getLong("rule_id"),
+	                        resultSet.getString("trigger_type"),
+	                        resultSet.getLong("trigger_value")),
                         resultSet.getLong("executor_id"),
                         resultSet.getLong("rule_modification_time"),
                         resultSet.getString("rule_name"),
@@ -126,7 +128,12 @@ public class WorkflowMapper {
         return new Action(
                         resultSet.getLong("action_id"),
                         resultSet.getLong("rule_id"),
-                        new ArrayList<Notification>(),
+                        new Notification(
+                    		resultSet.getLong("notification_id"),
+                            resultSet.getLong("action_id"),
+                            new ArrayList<Recipient>(),
+                            resultSet.getString("subject"),
+                            resultSet.getString("text")),
                         resultSet.getString("action_status"),
                         resultSet.getString("action_type")
                     );

@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class Action{
     private final long actionId;
     private final long ruleId;
-    private final List<Notification> notifications;
+    private final Notification notification;
     private final String status;
     private final String type;
 }

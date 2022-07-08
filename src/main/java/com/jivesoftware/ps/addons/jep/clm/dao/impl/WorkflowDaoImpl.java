@@ -287,7 +287,103 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
     @Override
     public void Delete(Workflow workflow) {
-        // TODO Auto-generated method stub
+    	final Handle handle = dbi.open();
+    	
+    	if (workflow.getWorkflowId()==0 && workflow.getStatus() != "Deleted") {
+    		System.out.print("Workflow doesn't exist");
+    	}
+    	else {
+    		handle.createStatement("UPDATE clm_workflow SET status = 'Deleted' WHERE workflow_id = :workflow_id")
+    			.bind("workflow_id", workflow.getWorkflowId());
+    		
+    		for(Rule rule: workflow.getRules()) {
+
+		    	if (rule.getRuleId()==0 && rule.getStatus() != "Deleted") {
+		    		System.out.print("Rule doesn't exist");
+		    	}
+		    	else {
+		    		handle.createStatement("UPDATE clm_rule SET status = 'Deleted' WHERE rule_id = :rule_id")
+	    				.bind("rule_id", rule.getRuleId());
+		    	}
+		    	
+		    	for (Action action: rule.getActions())
+				{
+		    		if (action.getActionId()==0 && action.getStatus()!= "Deleted") {
+		    			System.out.print("Action doesn't exist");
+		    		}
+		    		else {
+		    			handle.createStatement("UPDATE clm_rule_action SET status = 'Deleted' WHERE action_id = :action_id")
+	    				.bind("action_id", action.getActionId());
+		    		}
+		    		
+		    		Notification notification = action.getNotification();
+					
+		    		if (notification.getNotificationId()==0) {
+		    			System.out.print("Notification doesn't exist");
+		    		}
+		    		else {
+		    			handle.createStatement("DELETE from clm_notification WHERE notification_id = :notification_id")
+	    				.bind("notification", notification.getNotificationId());
+		    		}
+		    		
+		    		for (Recipient recipient: notification.getRecipients())
+					{
+			    		if (recipient.getRecipientTypeId()==0) {
+			    			System.out.print("Recipient doesn't exist");
+			    		}
+			    		else {
+			    			handle.createStatement("DELETE from clm_recipient WHERE recipient_id = :recipient_id")
+		    				.bind("notification", notification.getNotificationId());
+			    		}
+			    	}
+		    	}
+		    	Trigger trigger = rule.getTrigger();
+		    	
+	    		if (trigger.getTriggerId()==0) {
+	    			System.out.print("Recipient doesn't exist");
+	    		}
+	    		else {
+	    			handle.createStatement("DELETE from clm_trigger WHERE trigger_id = :trigger_id")
+    				.bind("notification", trigger.getTriggerId());
+	    		}
+	    			
+    		}
+    		for(ContentType contentType: workflow.getContentTypes())
+			{
+				if (contentType.getContentTypeId()==0 && contentType.getStatus() != "Deleted")
+				{
+					System.out.print("Content Type doesn't exist");
+				}
+				else {
+					handle.createStatement("UPDATE clm_content_type SET status = 'Deleted' WHERE content_type_id = :content_type_id")
+    				.bind("content_type_id", contentType.getContentTypeId());
+				}
+			}
+    		
+    		for(Reviewer reviewer: workflow.getReviewers())
+			{
+				if (reviewer.getReviewerId()==0 && reviewer.getStatus() != "Deleted")
+				{
+					System.out.print("Reviewer doesn't exist");
+				}
+				else {
+					handle.createStatement("UPDATE clm_reviewer SET status = 'Deleted' WHERE reviewer_id = :reviewer_id")
+    				.bind("reviewer_id", reviewer.getReviewerId());
+				}
+				
+			}
+    		for(Place place: workflow.getPlaces())
+			{
+				if (Objects.isNull(place.getPlaceId()) && place.getStatus() != "Deleted")
+				{
+					System.out.print("Place doesn't exist");
+				}
+				else {
+					handle.createStatement("UPDATE clm_place SET status = 'Deleted' WHERE place_id = :place_id")
+    				.bind("place_id", place.getPlaceId());
+				}
+			}
+    	}
 
     }
 
@@ -296,7 +392,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
     	final Handle handle = dbi.open();
     	try {
 
-	    	if (workflow.getWorkflowId()==0) {
+	    	if (workflow.getWorkflowId()==0 && workflow.getStatus() != "Deleted") {
 
 	            handle.createStatement(INSERT_WORKFLOW_SQL)
                      .bind("author", workflow.getAuthor())
@@ -325,7 +421,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 		    for(Rule rule: workflow.getRules()) {
 
-		    	if (rule.getRuleId()==0) {
+		    	if (rule.getRuleId()==0 && rule.getStatus() != "Deleted") {
 
 		            handle.createStatement(INSERT_RULE_SQL)
 						.bind("executor_id", rule.getExecutorId())
@@ -352,7 +448,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 		    	for (Action action: rule.getActions())
 				{
-		    		if (action.getActionId()==0) {
+		    		if (action.getActionId()==0 && action.getStatus()!= "Deleted") {
 
 			            handle.createStatement(INSERT_ACTION_SQL)
 							.bind("status", action.getStatus())
@@ -371,50 +467,49 @@ public class WorkflowDaoImpl implements WorkflowDao {
 							.execute();
 				    }
 
-		    		for (Notification notification: action.getNotifications())
-					{
-			    		if (notification.getNotificationId()==0) {
+		    		Notification notification = action.getNotification();
+					
+		    		if (notification.getNotificationId()==0) {
 
-				            handle.createStatement(INSERT_NOTIFICATION_SQL)
-								.bind("subject", notification.getSubject())
-								.bind("text", notification.getText())
-								.bind("action_id", notification.getActionId())
+			            handle.createStatement(INSERT_NOTIFICATION_SQL)
+							.bind("subject", notification.getSubject())
+							.bind("text", notification.getText())
+							.bind("action_id", notification.getActionId())
+							.execute();
+				    }
+
+					else {
+
+						handle.createStatement(UPDATE_NOTIFICATION_SQL)
+							.bind("notification_id", notification.getNotificationId())
+							.bind("subject", notification.getSubject())
+							.bind("text", notification.getText())
+							.bind("action_id", notification.getActionId())
+							.execute();
+					}
+		    		for (Recipient recipient: notification.getRecipients())
+					{
+			    		if (recipient.getRecipientTypeId()==0) {
+
+				            handle.createStatement(INSERT_RECIPIENT_SQL)
+								.bind("notification_id", recipient.getNotificationId())
+								.bind("name", recipient.getName())
 								.execute();
 					    }
 
 						else {
 
-							handle.createStatement(UPDATE_NOTIFICATION_SQL)
-								.bind("notification_id", notification.getNotificationId())
-								.bind("subject", notification.getSubject())
-								.bind("text", notification.getText())
-								.bind("action_id", notification.getActionId())
+							handle.createStatement(UPDATE_RECIPIENT_SQL)
+								.bind("notification_id", recipient.getNotificationId())
+								.bind("recipient_type_id", recipient.getRecipientTypeId())
+								.bind("name", recipient.getName())
 								.execute();
 					    }
-			    		for (Recipient recipient: notification.getRecipients())
-						{
-				    		if (recipient.getRecipientTypeId()==0) {
-
-					            handle.createStatement(INSERT_RECIPIENT_SQL)
-									.bind("notification_id", recipient.getNotificationId())
-									.bind("name", recipient.getName())
-									.execute();
-						    }
-
-							else {
-
-								handle.createStatement(UPDATE_RECIPIENT_SQL)
-									.bind("notification_id", recipient.getNotificationId())
-									.bind("recipient_type_id", recipient.getRecipientTypeId())
-									.bind("name", recipient.getName())
-									.execute();
-						    }
-						}
 					}
-				}
+					
 
-		    	for (Trigger trigger: rule.getTriggers())
-		    	{
+			    	Trigger trigger = rule.getTrigger();
+			    	
 		    		if (trigger.getTriggerId()==0) {
 
 			            handle.createStatement(INSERT_TRIGGER_SQL)
@@ -433,14 +528,12 @@ public class WorkflowDaoImpl implements WorkflowDao {
 							.bind("rule_id", trigger.getRuleId())
 							.execute();
 				    }
-		    	}
-
-
-			}
+				}
+		    }
 
 			for(ContentType contentType: workflow.getContentTypes())
 			{
-				if (contentType.getContentTypeId()==0)
+				if (contentType.getContentTypeId()==0 && contentType.getStatus() != "Deleted")
 				{
 
 					handle.createStatement(INSERT_CONTENT_TYPE_SQL)
@@ -465,7 +558,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 			for(Reviewer reviewer: workflow.getReviewers())
 			{
-				if (reviewer.getReviewerId()==0)
+				if (reviewer.getReviewerId()==0 && reviewer.getStatus() != "Deleted")
 				{
 
 					handle.createStatement(INSERT_REVIEWER_SQL)
@@ -490,7 +583,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 			for(Place place: workflow.getPlaces())
 			{
-				if (Objects.isNull(place.getPlaceId()))
+				if (Objects.isNull(place.getPlaceId()) && place.getStatus() != "Deleted")
 				{
 
 					handle.createStatement(INSERT_PLACE_SQL)
