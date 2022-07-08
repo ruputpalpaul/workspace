@@ -517,7 +517,6 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 				}
 			}
-			//TODO check for the id and insert for the Trigger, Recipient,
         }
 
 		finally {
