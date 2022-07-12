@@ -11,6 +11,7 @@ public interface WorkflowDao extends Dao {
 
     void saveWorkflow(Workflow workflow);
 
-	List<Workflow> listWorkflows(String type);
+
+	List<Workflow> listWorkflows(String type, Integer startIndex, Integer count);
 
 }

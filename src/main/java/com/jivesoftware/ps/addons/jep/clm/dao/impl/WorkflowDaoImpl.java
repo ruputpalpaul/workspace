@@ -1,5 +1,6 @@
 package com.jivesoftware.ps.addons.jep.clm.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -646,8 +647,17 @@ public class WorkflowDaoImpl implements WorkflowDao {
     }
 
     @Override
-    public List<Workflow> listWorkflows(String type) {
-        // TODO Auto-generated method stub
-        return null;
+	public List<Workflow> listWorkflows(String type, Integer startIndex, Integer count) {
+	        
+	    	List<Workflow> workflowList= new ArrayList<>();
+	    	int i = 0;
+	    	while(i < count)
+	    	{
+	    		workflowList.add(getById(startIndex));
+	    		i++;
+	    	}
+	    	
+	        return workflowList;
+	    
     }
 }

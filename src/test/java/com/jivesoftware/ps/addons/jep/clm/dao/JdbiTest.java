@@ -105,4 +105,13 @@ public class JdbiTest {
     	dao.Delete(workflow);
     	    	
     }
+
+    @Test
+    public void listWorkflow() {
+    	WorkflowDaoImpl dao = new WorkflowDaoImpl(dbi);
+    	
+    	List<Workflow> wfl = new ArrayList<>();
+    	wfl = dao.listWorkflows("open", 10, 2);
+    	System.out.print(wfl);
+    }
 }
