@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
+
 import com.jivesoftware.ps.addons.jep.clm.dao.WorkflowDao;
 import com.jivesoftware.ps.addons.jep.clm.dao.impl.mapper.WorkflowMapper;
 import com.jivesoftware.ps.addons.jep.clm.domain.Workflow;
@@ -20,62 +21,67 @@ import com.jivesoftware.ps.addons.jep.clm.domain.Notification;
 
 @RequiredArgsConstructor
 public class WorkflowDaoImpl implements WorkflowDao {
-    private static final String GET_BY_ID_SQL = "select wf.workflow_id,\r\n"
-                    + "       wf.author,\r\n"
-                    + "       wf.last_modifier,\r\n"
-                    + "       wf.modification_time workflow_modification_time,\r\n"
-                    + "       wf.name as workflow_name,\r\n"
-                    + "       wf.publish_time workflow_publish_time,\r\n"
-                    + "       wf.status as workflow_status,\r\n"
-                    + "       wf.type as workflow_type,\r\n"
-                    + "       rv.reviewer_id,\r\n"
-                    + "       rv.status as reviewer_status,\r\n"
-                    + "       rv.reviewer_user_id,\r\n"
-                    + "       p.place_id,\r\n"
-                    + "       p.url,\r\n"
-                    + "       p.jive_id,\r\n"
-                    + "       p.jive_place_id,\r\n"
-                    + "       p.name as place_name,\r\n"
-                    + "       p.status as place_status,\r\n"
-                    + "       p.type as place_type,\r\n"
-                    + "       ct.content_type_id,\r\n"
-                    + "       ct.name as content_type_name,\r\n"
-                    + "       ct.status as content_type_status,\r\n"
-                    + "       r.rule_id,\r\n"
-                    + "       r.executor_id,\r\n"
-                    + "       r.modification_time as rule_modification_time,\r\n"
-                    + "       r.name as rule_name,\r\n"
-                    + "       r.publish_time as rule_publish_time,\r\n"
-                    + "       r.status as rule_publish_status,\r\n"
-                    + "       t.trigger_id,\r\n"
-                    + "       t.trigger_type,\r\n"
-                    + "       t.trigger_value,\r\n"
-                    + "       ra.action_id,\r\n"
-                    + "       ra.status as rule_action_status,\r\n"
-                    + "       ra.type as rule_action_type,\r\n"
-                    + "       n.notification_id,\r\n"
-                    + "       n.subject,\r\n"
-                    + "       n.text,\r\n"
-                    + "       rt.recipient_type_id,\r\n"
-                    + "       rt.name as recipient_type_name\r\n"
-                    + "  FROM clm_workflow as wf\r\n"
-                    + "  LEFT JOIN clm_reviewer as rv\r\n"
-                    + "         ON wf.workflow_id = rv.workflow_id\r\n"
-                    + "  LEFT JOIN clm_place as p\r\n"
-                    + "         ON wf.workflow_id = p.workflow_id\r\n"
-                    + "  LEFT JOIN clm_content_type as ct\r\n"
-                    + "         ON wf.workflow_id = ct.workflow_id\r\n"
-                    + " INNER JOIN clm_rule as r\r\n"
-                    + "         ON wf.workflow_id = r.workflow_id\r\n"
-                    + " INNER JOIN clm_trigger as t\r\n"
-                    + "         ON r.rule_id = t.rule_id\r\n"
-                    + " INNER JOIN clm_rule_action as ra\r\n"
-                    + "         ON r.rule_id = ra.rule_id\r\n"
-                    + "  LEFT JOIN clm_notification as n\r\n"
-                    + "         ON ra.action_id = n.action_id\r\n"
-                    + "  LEFT JOIN clm_recipient as rt\r\n"
-                    + "         ON n.notification_id = rt.notification_id\r\n"
-                    + " WHERE wf.workflow_id = :workflowId";
+    private static final String GET_BY_ID_SQL = "SELECT wf.workflow_id,\r\n"
+    		+ "       wf.author,\r\n"
+    		+ "       wf.last_modifier,\r\n"
+    		+ "       wf.modification_time as workflow_modification_time,\r\n"
+    		+ "       wf.name as workflow_name,\r\n"
+    		+ "       wf.publish_time as workflow_publish_time,\r\n"
+    		+ "       wf.status as workflow_status,\r\n"
+    		+ "       wf.type as workflow_type,\r\n"
+    		+ "       rv.reviewer_id,\r\n"
+    		+ "       rv.status as reviewer_status,\r\n"
+    		+ "       rv.reviewer_user_id,\r\n"
+    		+ "       p.place_id,\r\n"
+    		+ "       p.url,\r\n"
+    		+ "       p.jive_id,\r\n"
+    		+ "       p.jive_place_id,\r\n"
+    		+ "       p.name as place_name,\r\n"
+    		+ "       p.status as place_status,\r\n"
+    		+ "       p.type as place_type,\r\n"
+    		+ "       ct.content_type_id,\r\n"
+    		+ "       ct.name as content_type_name,\r\n"
+    		+ "       ct.status as content_type_status,\r\n"
+    		+ "       r.rule_id,\r\n"
+    		+ "       r.executor_id,\r\n"
+    		+ "       r.modification_time as rule_modification_time,\r\n"
+    		+ "       r.name as rule_name,\r\n"
+    		+ "       r.publish_time as rule_publish_time,\r\n"
+    		+ "       r.status as rule_publish_status,\r\n"
+    		+ "       t.trigger_id,\r\n"
+    		+ "       t.trigger_type,\r\n"
+    		+ "       t.trigger_value,\r\n"
+    		+ "       t.status as trigger_status,\r\n"
+    		+ "       ra.action_id,\r\n"
+    		+ "       ra.status as rule_action_status,\r\n"
+    		+ "       ra.type as rule_action_type,\r\n"
+    		+ "       n.notification_id,\r\n"
+    		+ "       n.subject,\r\n"
+    		+ "       n.text,\r\n"
+    		+ "       n.status as notification_status,\r\n"
+    		+ "       rt.recipient_type_id,\r\n"
+    		+ "       rt.name as recipient_type_name,\r\n"
+    		+ "       rt.status as recipient_type_status\r\n"
+    		+ "\r\n"
+    		+ "  FROM clm_workflow as wf\r\n"
+    		+ "  LEFT JOIN clm_reviewer as rv\r\n"
+    		+ "         ON wf.workflow_id = rv.workflow_id\r\n"
+    		+ "  LEFT JOIN clm_place as p\r\n"
+    		+ "         ON wf.workflow_id = p.workflow_id\r\n"
+    		+ "  LEFT JOIN clm_content_type as ct\r\n"
+    		+ "         ON wf.workflow_id = ct.workflow_id\r\n"
+    		+ "  INNER JOIN clm_rule as r\r\n"
+    		+ "         ON wf.workflow_id = r.workflow_id\r\n"
+    		+ "  INNER JOIN clm_trigger as t\r\n"
+    		+ "         ON r.rule_id = t.rule_id\r\n"
+    		+ "  INNER JOIN clm_rule_action as ra\r\n"
+    		+ "         ON r.rule_id = ra.rule_id\r\n"
+    		+ "  LEFT JOIN clm_notification as n\r\n"
+    		+ "         ON ra.action_id = n.action_id\r\n"
+    		+ "  LEFT JOIN clm_recipient_type as rt\r\n"
+    		+ "         ON n.notification_id = rt.notification_id\r\n"
+    		+ "\r\n"
+    		+ " WHERE wf.workflow_id = :workflow_id;";
 
     private static final String INSERT_WORKFLOW_SQL = "INSERT into clm_workflow(\r\n"
     		+ "    author,\r\n"
@@ -216,11 +222,13 @@ public class WorkflowDaoImpl implements WorkflowDao {
 	private static final String INSERT_NOTIFICATION_SQL = "insert into clm_notification(\r\n"
 			+ "    subject,\r\n"
 			+ "    text,\r\n"
-			+ "    action_id\r\n"
+			+ "    action_id, \r\n"
+			+ "    status \r\n"
 			+ ")\r\n"
 			+ "values(\r\n"
 			+ "    :subject,\r\n"
 			+ "    :text,\r\n"
+			+ "    :status, \r\n"
 			+ "    :action_id\r\n"
 			+ ");";
 
@@ -228,16 +236,19 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    notification_id = :notification_id,\r\n"
 			+ "    text = :text,\r\n"
 			+ "    aubject = :subject,\r\n"
+			+ "    status = :status,\r\n"
 			+ "    action_id = :action_id;";
 
 	private static final String INSERT_RECIPIENT_SQL = "insert into clm_notification(\r\n"
 			+ "    subject,\r\n"
 			+ "    text,\r\n"
+			+ "    status,\r\n"
 			+ "    action_id\r\n"
 			+ ")\r\n"
 			+ "values(\r\n"
 			+ "    :subject,\r\n"
 			+ "    :text,\r\n"
+			+ "    :status,\r\n"
 			+ "    :action_id\r\n"
 			+ ");";
 
@@ -245,16 +256,19 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    notification_id = :notification_id,\r\n"
 			+ "    text = :text,\r\n"
 			+ "    aubject = :subject,\r\n"
+			+ "    status = :status,\r\n"
 			+ "    action_id = :action_id;";
 
 	private static final String INSERT_TRIGGER_SQL = "insert into clm_trigger(\r\n"
 			+ "    trigger_type,\r\n"
 			+ "    trigger_value,\r\n"
+			+ "    status,\r\n"
 			+ "    rule_id\r\n"
 			+ ")\r\n"
 			+ "values(\r\n"
 			+ "    :trigger_type,\r\n"
 			+ "    :trigger_value,\r\n"
+			+ "    :status,\r\n"
 			+ "    :rule_id\r\n"
 			+ ");";
 
@@ -262,6 +276,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			+ "    trigger_id = :trigger_id,\r\n"
 			+ "    trigger_type = :trigger_type,\r\n"
 			+ "    trigger_value = :trigger_value,\r\n"
+			+ "    status = :status,\r\n"
 			+ "    rule_id = :rule_id;";
 	
 	
@@ -270,10 +285,11 @@ public class WorkflowDaoImpl implements WorkflowDao {
     @Override
     public Workflow getById(long workflowId) {
         final Handle handle = dbi.open();
+        
         try {
             return handle.createQuery(GET_BY_ID_SQL)
-                         .bind("workflowId", workflowId)
-                         .fold((Workflow)null, WorkflowMapper::mapDetails);
+                         .bind("workflow_id", workflowId)
+                         .fold((Workflow)null,WorkflowMapper::mapDetails);
         } finally {
             handle.close();
         }
@@ -479,6 +495,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			            handle.createStatement(INSERT_NOTIFICATION_SQL)
 							.bind("subject", notification.getSubject())
 							.bind("text", notification.getText())
+							.bind("status", notification.getStatus())
 							.bind("action_id", notification.getActionId())
 							.execute();
 				    }
@@ -489,6 +506,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 							.bind("notification_id", notification.getNotificationId())
 							.bind("subject", notification.getSubject())
 							.bind("text", notification.getText())
+							.bind("status", notification.getStatus())
 							.bind("action_id", notification.getActionId())
 							.execute();
 					}
@@ -499,6 +517,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 				            handle.createStatement(INSERT_RECIPIENT_SQL)
 								.bind("notification_id", recipient.getNotificationId())
 								.bind("name", recipient.getName())
+								.bind("status", recipient.getStatus())
 								.execute();
 					    }
 
@@ -507,6 +526,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 							handle.createStatement(UPDATE_RECIPIENT_SQL)
 								.bind("notification_id", recipient.getNotificationId())
 								.bind("recipient_type_id", recipient.getRecipientTypeId())
+								.bind("status", recipient.getStatus())
 								.bind("name", recipient.getName())
 								.execute();
 					    }
@@ -520,6 +540,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 			            handle.createStatement(INSERT_TRIGGER_SQL)
 							.bind("trigger_type", trigger.getTriggerType())
 							.bind("trigger_value", trigger.getTriggerValue())
+							.bind("status", trigger.getStatus())
 							.bind("rule_id", trigger.getRuleId())
 							.execute();
 				    }
@@ -530,6 +551,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 							.bind("trigger_id", trigger.getTriggerId())
 							.bind("trigger_type", trigger.getTriggerType())
 							.bind("trigger_value", trigger.getTriggerValue())
+							.bind("status", trigger.getStatus())
 							.bind("rule_id", trigger.getRuleId())
 							.execute();
 				    }

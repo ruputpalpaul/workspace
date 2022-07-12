@@ -1,7 +1,5 @@
 package com.jivesoftware.ps.addons.jep.clm.domain;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

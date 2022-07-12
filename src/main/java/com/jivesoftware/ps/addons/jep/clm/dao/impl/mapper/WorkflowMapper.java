@@ -18,6 +18,7 @@ import com.jivesoftware.ps.addons.jep.clm.domain.Place;
 import com.jivesoftware.ps.addons.jep.clm.domain.Notification;
 
 public class WorkflowMapper {
+	
     public static Workflow mapDetails(Workflow workflow, final ResultSet resultSet, final StatementContext ctx) throws SQLException {
         final Map<Long, Rule> rules = new HashMap<>();
         final Map<Long, ContentType> contentTypes = new HashMap<>();
@@ -84,7 +85,6 @@ public class WorkflowMapper {
         if (!notifications.containsKey(notificationId)){
             final Notification notification = getNotification(resultSet);
             notifications.put(notificationId, notification);
-            final Action action = actions.get(actionId);
         }
 
         final Long recipientId = resultSet.getLong("Recipient_id");
@@ -101,7 +101,6 @@ public class WorkflowMapper {
             reviewers.put(reviewerId, reviewer);
             workflow.getReviewers().add(reviewer);
         }
-
         return workflow;
     }
 
@@ -115,7 +114,7 @@ public class WorkflowMapper {
 	                        resultSet.getLong("rule_id"),
 	                        resultSet.getString("trigger_type"),
 	                        resultSet.getLong("trigger_value"),
-	                        resultSet.getString("status")),
+	                        resultSet.getString("workflow_status")),
                         resultSet.getLong("executor_id"),
                         resultSet.getLong("rule_modification_time"),
                         resultSet.getString("rule_name"),
@@ -134,9 +133,9 @@ public class WorkflowMapper {
                             new ArrayList<Recipient>(),
                             resultSet.getString("subject"),
                             resultSet.getString("text"),
-                            resultSet.getString("status")),
-                        resultSet.getString("action_status"),
-                        resultSet.getString("action_type")
+                            resultSet.getString("notification_status")),
+                        resultSet.getString("rule_action_status"),
+                        resultSet.getString("rule_action_type")
                     );
     }
 
@@ -169,7 +168,7 @@ public class WorkflowMapper {
                             resultSet.getLong("rule_id"),
                             resultSet.getString("trigger_type"),
                             resultSet.getLong("trigger_value"),
-                            resultSet.getString("status")
+                            resultSet.getString("trigger_status")
             );
     }
 
@@ -180,16 +179,16 @@ public class WorkflowMapper {
                             new ArrayList<Recipient>(),
                             resultSet.getString("subject"),
                             resultSet.getString("text"),
-                            resultSet.getString("status")
+                            resultSet.getString("notification_status")
             );
     }
 
     private static Recipient getRecipient(ResultSet resultSet) throws SQLException {
         return new Recipient(
                             resultSet.getLong("recipient_id"),
-                            resultSet.getLong("ntification_id"),
+                            resultSet.getLong("notification_id"),
                             resultSet.getString("recipient_type_name"),
-                            resultSet.getString("status")
+                            resultSet.getString("recipient_status")
             );
     }
 
@@ -200,6 +199,5 @@ public class WorkflowMapper {
                             resultSet.getString("reviewer_user_id"),
                             resultSet.getString("reviewer_status")
             );
-    }
-
+    }    
 }
