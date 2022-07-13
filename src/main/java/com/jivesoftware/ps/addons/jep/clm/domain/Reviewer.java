@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class Reviewer {
     private final long reviewerId;   
     private final long workflowId;
-    private final String reviewerUserId;                                                  
-    private final String status;                                 
+    private final Integer reviewerUserId;                                                  
+    private final WorkflowStatus status;                                 
 }

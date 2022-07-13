@@ -6,16 +6,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
 import org.skife.jdbi.v2.StatementContext;
+
 import com.jivesoftware.ps.addons.jep.clm.domain.Action;
+import com.jivesoftware.ps.addons.jep.clm.domain.ActionType;
 import com.jivesoftware.ps.addons.jep.clm.domain.ContentType;
+import com.jivesoftware.ps.addons.jep.clm.domain.Notification;
+import com.jivesoftware.ps.addons.jep.clm.domain.Place;
 import com.jivesoftware.ps.addons.jep.clm.domain.Recipient;
 import com.jivesoftware.ps.addons.jep.clm.domain.Reviewer;
 import com.jivesoftware.ps.addons.jep.clm.domain.Rule;
 import com.jivesoftware.ps.addons.jep.clm.domain.Trigger;
+import com.jivesoftware.ps.addons.jep.clm.domain.TriggerType;
 import com.jivesoftware.ps.addons.jep.clm.domain.Workflow;
-import com.jivesoftware.ps.addons.jep.clm.domain.Place;
-import com.jivesoftware.ps.addons.jep.clm.domain.Notification;
+import com.jivesoftware.ps.addons.jep.clm.domain.WorkflowStatus;
+import com.jivesoftware.ps.addons.jep.clm.domain.WorkflowType;
 
 public class WorkflowMapper {
 	
@@ -36,13 +42,13 @@ public class WorkflowMapper {
         		new ArrayList<ContentType>(),
         		new ArrayList<Reviewer>(),
         		new ArrayList<Place>(),
-        		resultSet.getString("author"),
-        		resultSet.getString("last_modifier"),
-        		resultSet.getLong("workflow_modification_time"),
-        		resultSet.getString("_workflow_name"),
-        		resultSet.getLong("workflow_publish_time"),
-        		resultSet.getString("workflow_status"),
-        		resultSet.getString("workflow_type")
+        		resultSet.getInt("author"),
+        		resultSet.getInt("last_modifier"),
+        		new java.util.Date(resultSet.getLong("workflow_modification_time")),
+        		resultSet.getString("workflow_name"),
+        		new java.util.Date(resultSet.getLong("workflow_publish_time")),
+        		WorkflowStatus.get(resultSet.getString("workflow_status")),
+        		WorkflowType.get(resultSet.getString("workflow_type"))
         	);
         }
 
@@ -81,18 +87,18 @@ public class WorkflowMapper {
             triggers.put(triggerId, trigger);
         }
 
-        final Long notificationId = resultSet.getLong("Notification_id");
+        final Long notificationId = resultSet.getLong("notification_id");
         if (!notifications.containsKey(notificationId)){
             final Notification notification = getNotification(resultSet);
             notifications.put(notificationId, notification);
         }
 
-        final Long recipientId = resultSet.getLong("Recipient_id");
+        final Long recipientId = resultSet.getLong("recipient_id");
         if (!recipients.containsKey(recipientId)){
-            final Recipient Recipient = getRecipient(resultSet);
-            recipients.put(recipientId, Recipient);
+            final Recipient recipient = getRecipient(resultSet);
+            recipients.put(recipientId, recipient);
             final Notification notification = notifications.get(notificationId);
-            notification.getRecipients().add(Recipient);
+            notification.getRecipients().add(recipient);
         }
 
         final Long reviewerId = resultSet.getLong("reviewer_id");
@@ -112,14 +118,14 @@ public class WorkflowMapper {
                         new Trigger(
                         	resultSet.getLong("trigger_id"),
 	                        resultSet.getLong("rule_id"),
-	                        resultSet.getString("trigger_type"),
+	                        TriggerType.get(resultSet.getString("trigger_type")),
 	                        resultSet.getLong("trigger_value"),
-	                        resultSet.getString("workflow_status")),
+	                        WorkflowStatus.get(resultSet.getString("trigger_status"))),
                         resultSet.getLong("executor_id"),
-                        resultSet.getLong("rule_modification_time"),
+                        new java.util.Date(resultSet.getLong("rule_modification_time")),
                         resultSet.getString("rule_name"),
-                        resultSet.getLong("rule_publish_time"),
-                        resultSet.getString("rule_publish_status")
+                        new java.util.Date(resultSet.getLong("rule_publish_time")),
+                        WorkflowStatus.get(resultSet.getString("rule_status"))
                     );
     }
 
@@ -133,9 +139,9 @@ public class WorkflowMapper {
                             new ArrayList<Recipient>(),
                             resultSet.getString("subject"),
                             resultSet.getString("text"),
-                            resultSet.getString("notification_status")),
-                        resultSet.getString("rule_action_status"),
-                        resultSet.getString("rule_action_type")
+                            WorkflowStatus.get(resultSet.getString("notification_status"))),
+                        WorkflowStatus.get(resultSet.getString("rule_action_status")),
+                        ActionType.get(resultSet.getString("rule_action_type"))
                     );
     }
 
@@ -147,7 +153,7 @@ public class WorkflowMapper {
                         resultSet.getLong("jive_id"),
                         resultSet.getLong("jive_place_id"),
                         resultSet.getString("place_name"),
-                        resultSet.getString("place_status"),
+                        WorkflowStatus.get(resultSet.getString("place_status")),
                         resultSet.getString("place_type")
         );
 
@@ -155,20 +161,20 @@ public class WorkflowMapper {
 
     private static ContentType getContentType(ResultSet resultSet) throws SQLException {
         return new ContentType(
-                            resultSet.getLong("content_type_id"),
-                            resultSet.getLong("workflow_id"),
-                            resultSet.getString("content_type_status"),
-                            resultSet.getString("content_type_name")
+                        resultSet.getLong("content_type_id"),
+                        resultSet.getLong("workflow_id"),
+                        WorkflowStatus.get(resultSet.getString("content_type_status")),
+                        resultSet.getString("content_type_name")
             );
     }
 
     private static Trigger getTrigger(ResultSet resultSet) throws SQLException {
         return new Trigger(
-                            resultSet.getLong("trigger_id"),
-                            resultSet.getLong("rule_id"),
-                            resultSet.getString("trigger_type"),
-                            resultSet.getLong("trigger_value"),
-                            resultSet.getString("trigger_status")
+			        		resultSet.getLong("trigger_id"),
+			                resultSet.getLong("rule_id"),
+			                TriggerType.get(resultSet.getString("trigger_type")),
+			                resultSet.getLong("trigger_value"),
+			                WorkflowStatus.get(resultSet.getString("trigger_status"))
             );
     }
 
@@ -179,7 +185,7 @@ public class WorkflowMapper {
                             new ArrayList<Recipient>(),
                             resultSet.getString("subject"),
                             resultSet.getString("text"),
-                            resultSet.getString("notification_status")
+                            WorkflowStatus.get(resultSet.getString("notification_status"))
             );
     }
 
@@ -188,7 +194,7 @@ public class WorkflowMapper {
                             resultSet.getLong("recipient_id"),
                             resultSet.getLong("notification_id"),
                             resultSet.getString("recipient_type_name"),
-                            resultSet.getString("recipient_status")
+                            WorkflowStatus.get(resultSet.getString("recipient_status"))
             );
     }
 
@@ -196,8 +202,8 @@ public class WorkflowMapper {
         return new Reviewer(
                             resultSet.getLong("reviewer_id"),
                             resultSet.getLong("workflow_id"),
-                            resultSet.getString("reviewer_user_id"),
-                            resultSet.getString("reviewer_status")
+                            resultSet.getInt("reviewer_user_id"),
+                            WorkflowStatus.get(resultSet.getString("reviewer_status"))
             );
     }    
 }

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class Trigger{
     private final long triggerId;
     private final long ruleId;
-    private final String triggerType;
+    private final TriggerType triggerType;
     private final long triggerValue;
-    private final String status;
+    private final WorkflowStatus status;
 }

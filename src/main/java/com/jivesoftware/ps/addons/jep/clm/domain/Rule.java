@@ -1,5 +1,6 @@
 package com.jivesoftware.ps.addons.jep.clm.domain;
 
+import java.util.Date;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,8 @@ public class Rule{
     private final List<Action> actions;
     private final Trigger trigger;
     private final long executorId;
-    private final long modificationTime;
+    private final Date modificationTime;
     private final String name;
-    private final long publishTime;
-    private final String status;
+    private final Date publishTime;
+    private final WorkflowStatus status;
 }

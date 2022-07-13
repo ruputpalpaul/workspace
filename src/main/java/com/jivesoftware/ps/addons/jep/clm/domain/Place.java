@@ -14,6 +14,6 @@ public class Place {
 	private final long jiveId;
 	private final long jivePlaceId;
     private final String name;                                                 
-    private final String status;                  
+    private final WorkflowStatus status;                  
     private final String type;                      
 }

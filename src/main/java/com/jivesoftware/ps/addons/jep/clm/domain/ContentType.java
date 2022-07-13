@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class ContentType{
     private final long contentTypeId;
     private final long workflowId;
-    private final String status;
+    private final WorkflowStatus status;
     private final String name;
 }

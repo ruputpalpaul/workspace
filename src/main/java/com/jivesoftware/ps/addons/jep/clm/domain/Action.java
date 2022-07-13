@@ -9,6 +9,6 @@ public class Action{
     private final long actionId;
     private final long ruleId;
     private final Notification notification;
-    private final String status;
-    private final String type;
+    private final WorkflowStatus status;
+    private final ActionType type;
 }

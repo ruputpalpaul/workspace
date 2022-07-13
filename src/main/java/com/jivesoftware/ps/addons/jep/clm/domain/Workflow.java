@@ -1,6 +1,9 @@
 package com.jivesoftware.ps.addons.jep.clm.domain;
 
+import java.util.Date;
 import java.util.List;
+
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,11 +15,11 @@ public class Workflow {
     private final List<ContentType> contentTypes;
     private final List<Reviewer> reviewers;
     private final List<Place> places;
-    private final String author;
-    private final String lastModifier;
-    private final long modificationTime;
+    private final Integer author;
+    private final Integer lastModifier;
+    private final Date modificationTime;
     private final String name;
-    private final long publishTime;
-    private final String status;
-    private final String type;
+    private final Date publishTime;
+    private final WorkflowStatus status;
+    private final WorkflowType type;
 }
