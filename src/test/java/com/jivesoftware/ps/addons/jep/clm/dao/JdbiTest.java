@@ -58,6 +58,13 @@ public class JdbiTest {
     	List <Place> placeList = new ArrayList<Place>();
     	List <Action> actionList = new ArrayList<Action>();
     	List <Recipient> recipientList = new ArrayList<Recipient>();
+		List <Rule> ruleList = new ArrayList<Rule>();
+		List <ContentType> contentType = new ArrayList<ContentType>();
+		List <Reviewer> reviewerList = new ArrayList<Reviwer>();
+		List <Place> placeList = new ArrayList<Place>();
+		List <Action> actionList = new ArrayList<Action>();
+		List <Recipient> recipientList = new ArrayList<Recipient>();
+
 
     	Recipient recipient = new Recipient(
     			0,
@@ -210,7 +217,19 @@ public class JdbiTest {
 			new Date(),
 			WorkflowStatus.Active
 		);
-		
+
+		Rule rule = new Rule(
+			0,
+			1001,
+			collection.emptyList(),
+			null,
+			1234,
+			new Date(),
+			"test",
+			new Date(),
+			WorkflowStatus.Active
+		)
+
 
     	Workflow workflow = new Workflow(
     			1,
@@ -250,6 +269,15 @@ public class JdbiTest {
     	wfl = dao.listWorkflows(WorkflowType.Content, 10, 2);
     	System.out.print(wfl);
     }
+
+	@Test
+	public void listWorkflow() {
+		workflow dao = nested workflow dao;
+		List <Workflow> = new Workflow();
+		wft = dao.listWorkflow(workflow.content_type_id, 10, 11);
+		System.out.print(wfl);
+		
+	}
 
 	@Test
 	public vois listWorkflow(){

@@ -21,11 +21,11 @@ public enum WorkflowStatus {
     WorkflowStatus(String value) {
 		this.value = value;
 	}
-    
+
     public String toString() {
     	return this.value;
     }
-   
+
     static {
         Map<String,WorkflowStatus> map = new ConcurrentHashMap<String, WorkflowStatus>();
         for (WorkflowStatus instance : WorkflowStatus.values()) {
@@ -36,5 +36,14 @@ public enum WorkflowStatus {
 
     public static WorkflowStatus get (String value) {
         return ENUM_MAP.get(value.toLowerCase());
+    }
+
+    public static WorkflowStatus get(String value) {
+        return ENUM_MAP.get(value.toLowerCase())
+    }
+
+    public static void main()
+    {
+        //Set this fucntion up for returning the workflow whenever the class is called
     }
 }

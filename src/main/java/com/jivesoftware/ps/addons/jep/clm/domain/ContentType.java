@@ -10,4 +10,8 @@ public class ContentType{
     private final long workflowId;
     private final WorkflowStatus status;
     private final String name;
+    final long contentType;
+    final long workflowId;
+    private final WorkflowStatus status;
+    private final String name;
 }

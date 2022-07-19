@@ -71,6 +71,7 @@ class workflowManager implements WorkflowDao{
         workflowType(model.get("type")),
         workflow.(model.get("lastModified")),
         workflow.model.getbyId("this").options.getExecutorId
+        
       );
 
       Workflow workflow = new Workflow(

@@ -13,4 +13,12 @@ public class Notification{
     private final String subject;
     private final String text;
     private final WorkflowStatus status;
+    private final long notificationId;
+    private final long actionId;
+    private final List<Recipient> recipients;
+    private final String text;
+    private final String subject;
+    private final String notificationId;
+    private final String actionId;
+    private final WorkflowStatus status;
 }

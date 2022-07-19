@@ -10,4 +10,8 @@ public class Recipient{
     private final long notificationId;
     private final String name;
     private final WorkflowStatus status;
+    private final WorkflowStatus status;
+    private final long notificationId;
+    private final long recipientId;
+    private final String name;
 }
