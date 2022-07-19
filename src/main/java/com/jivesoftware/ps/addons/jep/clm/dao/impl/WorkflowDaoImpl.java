@@ -91,8 +91,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		+ "         ON n.notification_id = rt.notification_id\r\n"
     		+ "\r\n"
     		+ " WHERE wf.workflow_id = :workflow_id;";
-    
-    private static final String GET_BY_ID_AND_TYPE_SQL = "SELECT wf.workflow_id,\r\n"
+
+    private static final String LIST_WORKFLOWS_SQL = "SELECT wf.workflow_id,\r\n"
     		+ "       wf.author,\r\n"
     		+ "       wf.last_modifier,\r\n"
     		+ "       wf.modification_time as workflow_modification_time,\r\n"
@@ -153,7 +153,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		+ "         ON n.notification_id = rt.notification_id\r\n"
     		+ "\r\n"
     		+ "WHERE wf.workflow_type = :workflow_type \r\n"
-    		+ "LIMIT :count offset :startIndex * :count \r\n"
+    		+ "LIMIT :count offset :offset \r\n"
     		+ "ORDER BY workflow_id";
 
     private static final String INSERT_WORKFLOW_SQL = "INSERT into clm_workflow(\r\n"
@@ -357,6 +357,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 
 
+
     private final DBI dbi;
 
     @Override
@@ -372,39 +373,18 @@ public class WorkflowDaoImpl implements WorkflowDao {
         }
     }
 
-    public Workflow getByIdAndType(Integer startIndex, String type, Integer count) {
-        final Handle handle = dbi.open();
-
-        try {
-            return handle.createQuery(GET_BY_ID_AND_TYPE_SQL)
-                         .bind("workflow_type", type)
-                         .bind("count", count)
-                         .bind("startIndex", startIndex)
-                         .fold((Workflow)null,WorkflowMapper::mapDetails);
-        } finally {
-            handle.close();
-        }
-    }
-
-
     @Override
     public void Delete(Workflow workflow) {
     	final Handle handle = dbi.open();
 
-    	if (workflow.getWorkflowId()==0 && workflow.getStatus().getValue() != "Deleted") {
-    		System.out.print("Workflow doesn't exist");
-    	}
-    	else {
+    	if (workflow.getWorkflowId()!=0) {
     		handle.createStatement("UPDATE clm_workflow SET status = 'Deleted' WHERE workflow_id = :workflow_id")
     			.bind("workflow_id", workflow.getWorkflowId())
     			.execute();
 
     		for(Rule rule: workflow.getRules()) {
 
-		    	if (rule.getRuleId()==0 && rule.getStatus().getValue() != "Deleted") {
-		    		System.out.print("Rule doesn't exist");
-		    	}
-		    	else {
+		    	if (rule.getRuleId()!=0)
 		    		handle.createStatement("UPDATE clm_rule SET status = 'Deleted' WHERE rule_id = :rule_id")
 	    				.bind("rule_id", rule.getRuleId())
 	    				.execute();
@@ -412,11 +392,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
     		}
     		for(ContentType contentType: workflow.getContentTypes())
 			{
-				if (contentType.getContentTypeId()==0 && contentType.getStatus().getValue() != "Deleted")
-				{
-					System.out.print("Content Type doesn't exist");
-				}
-				else {
+				if (contentType.getContentTypeId()!=0)
 					handle.createStatement("UPDATE clm_content_type SET status = 'Deleted' WHERE content_type_id = :content_type_id")
     				.bind("content_type_id", contentType.getContentTypeId())
     				.execute();
@@ -425,16 +401,11 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
     		for(Reviewer reviewer: workflow.getReviewers())
 			{
-				if (reviewer.getReviewerId()==0 && reviewer.getStatus().getValue() != "Deleted")
-				{
-					System.out.print("Reviewer doesn't exist");
-				}
-				else {
+				if (reviewer.getReviewerId()!=0)
 					handle.createStatement("UPDATE clm_reviewer SET status = 'Deleted' WHERE reviewer_id = :reviewer_id")
     				.bind("reviewer_id", reviewer.getReviewerId())
     				.execute();
 				}
-
 			}
     		for(Place place: workflow.getPlaces())
 			{
@@ -448,7 +419,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
     				.execute();
 				}
 			}
-    	}
+			for(place: place in the system please get all the updated system)
+
     	handle.close();
 
     }
@@ -457,7 +429,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
     public void saveWorkflow(Workflow workflow) {
     	final Handle handle = dbi.open();
     	try {
-
+			//first we check if the workflow is existing on the db or not and whether it is a deleted workflow
 	    	if (workflow.getWorkflowId()==0 && workflow.getStatus().getValue() != "Deleted") {
 
 	            handle.createStatement(INSERT_WORKFLOW_SQL)
@@ -471,7 +443,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
                      .execute();
 		    }
 	    	else {
-
+				//here we do an update if the workflow exists already by assuming that if it has an id it must be existent on the db as well
 	            handle.createStatement(UPDATE_WORKFLOW_SQL)
                      .bind("workflow_id", workflow.getWorkflowId())
                      .bind("author", workflow.getAuthor())
@@ -486,7 +458,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 
 		    for(Rule rule: workflow.getRules()) {
-
+				// similar strategy for rule as well that we have a workflow rule in the db because the object has an id associated with it.
 		    	if (rule.getRuleId()==0 && rule.getStatus().getValue() != "Deleted") {
 
 		            handle.createStatement(INSERT_RULE_SQL)
@@ -511,7 +483,8 @@ public class WorkflowDaoImpl implements WorkflowDao {
 						.bind("workflow_id", rule.getWorkflowId())
 						.execute();
 			    }
-
+				// for the nested lists in various object we do an initial check of whether the object exists on the db or not
+				// if it does exist we update the object and if it does not then we insert a new object in to the db with appropriate relationships.
 		    	for (Action action: rule.getActions())
 				{
 		    		if (action.getActionId()==0 && action.getStatus().getValue()!= "Deleted") {
@@ -602,7 +575,7 @@ public class WorkflowDaoImpl implements WorkflowDao {
 				    }
 				}
 		    }
-
+			//content type describes if the content that the workflow is managing is a video photo or blog. There are various options associated with it.
 			for(ContentType contentType: workflow.getContentTypes())
 			{
 				if (contentType.getContentTypeId()==0 && contentType.getStatus().getValue() != "Deleted")
@@ -655,6 +628,9 @@ public class WorkflowDaoImpl implements WorkflowDao {
 
 			for(Place place: workflow.getPlaces())
 			{
+				//What if we have to get all the eystem in place and not worry about them ever, think about it?
+				//It is our goal to get all the systems in place by 27 th of this month.
+				//Let us get all hands on deck working on this.
 				if (Objects.isNull(place.getPlaceId()))
 				{
 
@@ -682,8 +658,21 @@ public class WorkflowDaoImpl implements WorkflowDao {
 						.bind("workflow_id", place.getWorkflowId())
 						.execute();
 
-
+					Let us get all the SOPs in place
 				}
+			}
+
+			else{
+				handle.createStatement(UPDATE_ACTION_SQL)
+				.bind("place_id", place.getPlaceId())
+				.bind("url", place.getUrl())
+				.bind("jive_id", place.getJiveId())
+				.bind("jive_place_id", place.getJivePlaceId())
+				.bind("name", place.getName())
+				.bind("status", place.getStatus().getValue())
+				.bind("type", place.getType())
+				.bind("workflow_id", place.getWorkflowId())
+				.execute();
 			}
         }
 
@@ -691,8 +680,21 @@ public class WorkflowDaoImpl implements WorkflowDao {
             handle.close();
         }
 
+		else{
+			handle.createQuery("Select * from clm_workflow where action_id == 0
+			left join clm_action as as on
+			workflow_id = workflow_id
+			left join clm_rule as r
+			on r.workflow_id = workflow_id
+			left join clm_ninja as n
+			where n,workflow_id - worjflow_id");
+			.bind("worjflow_id", workflow_id);
+			.bind("workflow_status"), WorkflowStatus.Deleted.
+			On gettting the above information we must get all the data and collect them into the database to later format as needed.
+			This data will be used to later create the appropriate tables and then we can proceed futher from there
+		}
     }
-    
+
 
     @Override
 	public List<Workflow> listWorkflows(WorkflowType type, Integer startIndex, Integer count) {

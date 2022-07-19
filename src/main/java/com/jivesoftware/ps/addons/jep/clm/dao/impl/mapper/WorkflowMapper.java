@@ -24,7 +24,7 @@ import com.jivesoftware.ps.addons.jep.clm.domain.WorkflowStatus;
 import com.jivesoftware.ps.addons.jep.clm.domain.WorkflowType;
 
 public class WorkflowMapper {
-	
+
     public static Workflow mapDetails(Workflow workflow, final ResultSet resultSet, final StatementContext ctx) throws SQLException {
         final Map<Long, Rule> rules = new HashMap<>();
         final Map<Long, ContentType> contentTypes = new HashMap<>();
@@ -107,6 +107,12 @@ public class WorkflowMapper {
             reviewers.put(reviewerId, reviewer);
             workflow.getReviewers().add(reviewer);
         }
+        if (!reviewrs.containsKey(recipient))
+        {
+            final reviewer reviewer = get reviewer(resultSet);
+            reviewer.put(recipient, recipient_id);
+            workflow.getReviewer().add(reviewer);
+        }
         return workflow;
     }
 
@@ -143,6 +149,19 @@ public class WorkflowMapper {
                         WorkflowStatus.get(resultSet.getString("rule_action_status")),
                         ActionType.get(resultSet.getString("rule_action_type"))
                     );
+        return new Action(
+            resultSet.getLong("action_id"),
+            resultSet.getLong("rule_id"),
+            new Notification(
+                resultSet.getLong("notification_id"),
+                resultSet.getLong("action_id"),
+                new ArrayList<Recipient>(),
+                resultSet.getString("Subject"),
+                resultSet.getString("text"),
+                WorkflowStatus.get(resultSet.getString("notification_status"))
+
+            )
+        )
     }
 
     private static Place getPlace(ResultSet resultSet) throws SQLException {
@@ -205,5 +224,5 @@ public class WorkflowMapper {
                             resultSet.getInt("reviewer_user_id"),
                             WorkflowStatus.get(resultSet.getString("reviewer_status"))
             );
-    }    
+    }
 }

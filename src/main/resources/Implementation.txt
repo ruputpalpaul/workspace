@@ -1,0 +1,63 @@
+The flow of data in the program.
+    We have 9 classes in the database
+        * Workflow
+        * Rule
+        * Action
+        * Notification
+        * Recipient
+        * ContentType
+        * Reviewer
+        * Trigger
+        * Place
+
+Now the Workflow object has a list of
+    List of rules
+    List of contentTypes
+    List of reviewers
+    List of places
+
+Thesea are an array map of the database objects in the workflow object.
+
+The WorkflowDaoImpl has 4 functions:
+    GetById
+    SaveWorkflow
+    List Workflow
+    Delete Workflow
+
+The get by Id function accesses the db to get the values of all the
+related workflow classes in a single joined table and the respective mapper fucntion
+in the mapper class maps all the values of the tables into their respective
+tables and return a full workflow object with all the nested lists.
+
+The save workflow function gets the whole workflow object from the manager class. The manager class
+gets the same from the frontend of the aplication's XML page. It then maps each value of the workflow
+object into the queries individually and performs a precheck for existing db values.
+If the value does not exist, then it makes an Insert into the db. Else there is an
+update in the db tables for the same primary and foregin keys.
+
+The list workflow is similar to the get by Id instead it fetches only the workflow object and not
+the rest of the lists associated with the Workflow. The list is then passed on to the Manager class
+as a List<Workflow> object. It leverages the list workflow query to paginate and limit the number of workflows
+being fetched in 1 call.
+
+The delete workflow marks each and every db status column of the associated tables of
+a workflow as deleted. For this we are using an enum class for status that determines
+the string value but can be used as a class object to change from deleted to active and vice versa.
+
+The Manager Class:
+
+    The GetById function takes the db and the workflow id instance from the html injection.
+    Then we get the whole workflow from the db and map the same onto different object models
+    and return it as a Workflow model object. i.e. map<String, Object>
+
+    The Delete workflow function just maps the workflow id into the java impl class's delete fucntion
+
+    The save workflow function is still TODO
+
+    The list workflow fucntion gets the index, page number and gets the list of worflows to map
+    into a list of workflow model object.
+
+    Also the list will be mapped to a model for the frontend called the AIX list model.
+
+//TODO Implement the save workflow mapper to map the front end details into separate class objects
+so that it can be passed onto the workflowdaoimpl class for saving it into the database.
