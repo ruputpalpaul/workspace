@@ -1,5 +1,6 @@
 package com.jivesoftware.ps.addons.jep.clm.manager;
 
+<<<<<<< HEAD
 class workflowManager implements WorkflowDao{
 
     public Map<String, Object> getWorkflowDetails(JiveInstance jiveInstance, Integer workflowId,
@@ -131,4 +132,9 @@ class workflowManager implements WorkflowDao{
       )
     })
   }
+=======
+public class WorkflowManager {
+    
+    public AixListModel<WorkflowModel> listWorkflows (WorkflowType type, Integer count, Integer startIndex, JiveObject jiveInstance)
+>>>>>>> c699bb91303c92dbb8084e3ede6d0041f9c03877
 }
